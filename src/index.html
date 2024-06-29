@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-based Interactive Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas class="webgl"></canvas>
+    
+    <div class="content-wrapper">
+        <section class="section">
+            <div class="p5-container" id="p5-sketch-1"></div>
+            <div class="content-overlay">
+                <!-- <h1>המרוץ לחלל</h1> -->
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>טקסט טקסט</h2>
+            <p>הנה טקסט בשביל יוחאי איזה כיף לו</p>
+        </section>
+
+        <section class="section">
+            <h2>Third Section</h2>
+            <p>This section contains a torus Three.js object.</p>
+        </section>
+
+        <section class="section">
+            <h2>Final Section</h2>
+            <p>This section contains a p5js.</p>
+            <div class="p5-container" id="p5-sketch-2"></div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
