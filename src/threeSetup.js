@@ -135,16 +135,17 @@ export function handleResize() {
 
 // New function to update camera position based on scroll
 export function updateCameraPosition(sectionScrollY, sectionStartY, sectionEndY) {
-    console.log("From threeJS, camera update", sectionScrollY);
+    console.log("Updating camera position:", sectionScrollY, sectionStartY, sectionEndY);
     
-    // Calculate the progress through the section (0 to 1)
     const sectionHeight = sectionEndY - sectionStartY;
-    const scrollProgress = sectionScrollY / sectionHeight;
+    const scrollProgress = Math.max(0, Math.min(1, sectionScrollY / sectionHeight));
     
-    // Adjust this value to control how much the camera moves
-    const totalCameraMove = 4; // This will move the camera 4 units over the entire section
+    const totalCameraMove = 4; // Adjust this value as needed
     
-    camera.position.y = -scrollProgress * totalCameraMove;
+    const newY = -scrollProgress * totalCameraMove;
+    console.log("New camera Y position:", newY);
+    
+    camera.position.y = newY;
   }
 
 // New function to trigger animations on section change

@@ -11,14 +11,14 @@ const scrollManager = new ScrollManager('.scrollable-text', updateCameraPosition
 scrollManager.addSection({
     startY: 0,
     endY: window.innerHeight,  // Adjust based on your layout
-    textScrollBehavior: 'scroll',
+    textScrollBehavior: 'static',
     threeJSBehavior: 'static',
   });
   
   scrollManager.addSection({
     startY: window.innerHeight,  // Should match the endY of the previous section
     endY: window.innerHeight * 2,  // Adjust based on your layout
-    textScrollBehavior: 'scroll',
+    textScrollBehavior: 'static',
     threeJSBehavior: 'scroll',
   });
 

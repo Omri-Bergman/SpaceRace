@@ -55,15 +55,22 @@ export class ScrollManager {
     );
   }
 
-  updateThreeJS() {
+// In ScrollManager class
+updateThreeJS() {
     if (this.currentSectionIndex === -1) return;
     const currentSection = this.sections[this.currentSectionIndex];
+    console.log('Current section:', this.currentSectionIndex, 'Behavior:', currentSection.threeJSBehavior);
     if (currentSection.threeJSBehavior === 'static') {
-      // Keep Three.js content static
-    } else if (currentSection.threeJSBehavior === 'scroll') {
-      // Update Three.js based on scroll
+      console.log('Static behavior, resetting camera');
       if (this.updateCameraPosition) {
-        this.updateCameraPosition(this.scrollY);
+        this.updateCameraPosition(0, currentSection.startY(), currentSection.endY());
+      }
+    } else if (currentSection.threeJSBehavior === 'scroll') {
+      console.log('Scroll behavior');
+      if (this.updateCameraPosition) {
+        const sectionScrollY = this.scrollY - currentSection.startY();
+        console.log('Section scroll:', sectionScrollY);
+        this.updateCameraPosition(sectionScrollY, currentSection.startY(), currentSection.endY());
       }
     }
   }
