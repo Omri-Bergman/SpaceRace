@@ -43,7 +43,7 @@ export function initThree() {
 
     // Create planet group
     planetGroup = new THREE.Group();
-    // scene.add(planetGroup);
+    scene.add(planetGroup);
 
     // Create planet
     const planetGeometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -122,33 +122,6 @@ export function initThree() {
     });
 }
 
-export function handleScroll() {
-    scrollY = window.scrollY;
-    const newSection = Math.round(scrollY / sizes.height);
-
-    if(newSection != currentSection) {
-        currentSection = newSection;
-
-        gsap.to(planetGroup.rotation, {
-            duration: 1.5,
-            ease: 'power2.inOut',
-            x: '+=6',
-            y: '+=3',
-            z: '+=1.5'
-        });
-
-        gsap.to(torus.rotation, {
-            duration: 1.5,
-            ease: 'power2.inOut',
-            x: '+=6',
-            y: '+=3',
-            z: '+=1.5'
-        });
-    }
-
-    camera.position.y = - scrollY / sizes.height * 4;
-}
-
 export function handleResize() {
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
@@ -158,6 +131,39 @@ export function handleResize() {
 
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+}
+
+// New function to update camera position based on scroll
+export function updateCameraPosition(sectionScrollY, sectionStartY, sectionEndY) {
+    console.log("From threeJS, camera update", sectionScrollY);
+    
+    // Calculate the progress through the section (0 to 1)
+    const sectionHeight = sectionEndY - sectionStartY;
+    const scrollProgress = sectionScrollY / sectionHeight;
+    
+    // Adjust this value to control how much the camera moves
+    const totalCameraMove = 4; // This will move the camera 4 units over the entire section
+    
+    camera.position.y = -scrollProgress * totalCameraMove;
+  }
+
+// New function to trigger animations on section change
+export function triggerSectionAnimation() {
+    gsap.to(planetGroup.rotation, {
+        duration: 1.5,
+        ease: 'power2.inOut',
+        x: '+=6',
+        y: '+=3',
+        z: '+=1.5'
+    });
+
+    gsap.to(torus.rotation, {
+        duration: 1.5,
+        ease: 'power2.inOut',
+        x: '+=6',
+        y: '+=3',
+        z: '+=1.5'
+    });
 }
 
 const clock = new THREE.Clock();
