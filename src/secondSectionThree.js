@@ -17,7 +17,7 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
     function createTextMesh(text, width, height) {
         const textMesh = new Text()
         textMesh.text = text
-        textMesh.fontSize = 0.4
+        textMesh.fontSize = 0.3
         textMesh.color = 0xffffff
         textMesh.maxWidth = width
         textMesh.anchorX = 'right'
@@ -25,7 +25,7 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
         textMesh.textAlign = 'right'
         textMesh.font = 'fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95.ttf'  // Just specify the font name here
         textMesh.sync()
-        textMesh.position.set(5,0,0)
+        textMesh.position.set(4,0,0)
     
         return textMesh
     }
@@ -41,7 +41,7 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
     האסטרונומיה ממשיכה להתפתח עם טכנולוגיות חדשות, מובילה לגילויים מרגשים ומרחיבה את הבנתנו על היקום העצום והמסתורי שבו אנו חיים.
     `;
     
-    const textMesh = createTextMesh(hebrewText, 10, 0);
+    const textMesh = createTextMesh(hebrewText, 7, 0);
     textMesh.position.z = -5;
     objects.add(textMesh);
 
