@@ -59,9 +59,9 @@ export class ScrollManager {
 updateThreeJS() {
     if (this.currentSectionIndex === -1) return;
     const currentSection = this.sections[this.currentSectionIndex];
-    console.log('Current section:', this.currentSectionIndex, 'Behavior:', currentSection.threeJSBehavior);
+    // console.log('Current section:', this.currentSectionIndex, 'Behavior:', currentSection.threeJSBehavior);
     if (currentSection.threeJSBehavior === 'static') {
-      console.log('Static behavior, resetting camera');
+      // console.log('Static behavior, resetting camera');
       if (this.updateCameraPosition) {
         this.updateCameraPosition(0, currentSection.startY(), currentSection.endY());
       }
@@ -69,7 +69,7 @@ updateThreeJS() {
       console.log('Scroll behavior');
       if (this.updateCameraPosition) {
         const sectionScrollY = this.scrollY - currentSection.startY();
-        console.log('Section scroll:', sectionScrollY);
+        // console.log('Section scroll:', sectionScrollY);
         this.updateCameraPosition(sectionScrollY, currentSection.startY(), currentSection.endY());
       }
     }

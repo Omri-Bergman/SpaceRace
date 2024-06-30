@@ -25,12 +25,21 @@ html, body {
     z-index: 2;
 }
 
+#second-three-container {
+    position: absolute;
+    top: 200;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
 .scrollable-text {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 200;
     width: 100%;
-    padding: 20px;
+    padding: 100px;
     box-sizing: border-box;
     transition: transform 0.1s ease-out;
   }
@@ -47,7 +56,7 @@ html, body {
     position: relative;
     overflow: hidden;
     bottom: 0px;
-    left: 220px;
+    left: 0px;
 }
 
 h1, h2 {
