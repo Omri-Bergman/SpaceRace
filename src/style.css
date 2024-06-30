@@ -98,6 +98,14 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Optional: adds a shadow for better readability */
     font-family: "Lucida Console", "Courier New", monospace;
 }
+
+@font-face {
+    font-family: 'alfaBravo';
+    src: url('fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 @media (max-width: 768px) {
     h1, h2 {
         font-size: 2rem;

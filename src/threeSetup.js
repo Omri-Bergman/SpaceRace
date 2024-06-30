@@ -56,13 +56,6 @@ export function initFirstSectionThree() {
 
     planetGroup.position.x = -1.5;
 
-    // Create torus
-    const torusGeometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
-    const torus = new THREE.Mesh(torusGeometry, material5);
-    torus.position.x = 1.5;
-    torus.position.y = -8; // Position it in the third section
-    objects.add(torus);
-
     // // Create particles
     // const particlesCount = 1000;
     // const positions = new Float32Array(particlesCount * 3);
@@ -110,7 +103,6 @@ export function initFirstSectionThree() {
         planetGroup,
         planet,
         moon,
-        torus,
         particles,
         animate: (deltaTime, elapsedTime) => {
             // Animation logic here
@@ -129,11 +121,6 @@ export function initFirstSectionThree() {
 
             // Subtle movement of the moon
             moon.position.y = Math.sin(elapsedTime * 0.7) * 0.05;
-
-            // Animate torus
-            torus.rotation.x += deltaTime * 0.1;
-            torus.rotation.y += deltaTime * 0.12;
-
             // Animate particles
             // particles.rotation.y = elapsedTime * 0.02;
                         // ... rest of animation logic

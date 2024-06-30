@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import { Text } from 'troika-three-text'
+
 
 export function initSecondSectionThree(scene, camera, renderer, glassModel, gui) {
     const objects = new THREE.Group();
@@ -12,38 +14,37 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
         milkiness: 0.5
     };
 
-    function createTextTexture(text, width, height) {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const context = canvas.getContext('2d');
-
-        // Make the background transparent
-        context.clearRect(0, 0, width, height);
-
-        // Set up the text
-        context.fillStyle = 'white';
-        context.font = 'bold 120px Arial';
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-
-        // Add main text
-        context.fillText(text, width / 2, height / 2);
-
-        return new THREE.CanvasTexture(canvas);
+    function createTextMesh(text, width, height) {
+        const textMesh = new Text()
+        textMesh.text = text
+        textMesh.fontSize = 0.4
+        textMesh.color = 0xffffff
+        textMesh.maxWidth = width
+        textMesh.anchorX = 'right'
+        textMesh.anchorY = 'middle'
+        textMesh.textAlign = 'right'
+        textMesh.font = 'fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95.ttf'  // Just specify the font name here
+        textMesh.sync()
+        textMesh.position.set(5,0,0)
+    
+        return textMesh
     }
+    
+    // Hebrew text about astronomy
+    const hebrewText = `
+    אסטרונומיה היא המדע העוסק בחקר גרמי השמים והיקום. היא כוללת תצפיות וחקר של כוכבים, פלנטות, גלקסיות, וכל התופעות המתרחשות מחוץ לכדור הארץ.
+    
+    אסטרונומים משתמשים במגוון כלים, כולל טלסקופים קרקעיים וחלליים, לחקור את היקום. הם חוקרים נושאים כמו היווצרות כוכבים, מבנה הגלקסיות, והתפתחות היקום מאז המפץ הגדול.
+    
+    אחד הנושאים המרתקים באסטרונומיה הוא חיפוש אחר חיים מחוץ לכדור הארץ. מדענים מחפשים פלנטות דמויות כדור הארץ באזורים הניתנים למגורים סביב כוכבים אחרים, ומנסים לגלות סימנים לחיים או תנאים המתאימים לחיים.
+    
+    האסטרונומיה ממשיכה להתפתח עם טכנולוגיות חדשות, מובילה לגילויים מרגשים ומרחיבה את הבנתנו על היקום העצום והמסתורי שבו אנו חיים.
+    `;
+    
+    const textMesh = createTextMesh(hebrewText, 10, 0);
+    textMesh.position.z = -5;
+    objects.add(textMesh);
 
-    const backgroundTexture = createTextTexture('מה אני כותב פה?', 1024, 1024);
-    const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-    const backgroundMaterial = new THREE.MeshBasicMaterial({
-        map: backgroundTexture,
-        transparent: true,
-        opacity: 1,
-        side: THREE.DoubleSide
-    });
-    const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-    backgroundMesh.position.z = -5;
-    objects.add(backgroundMesh);
 
     // Render target for the scene behind the glass
     const renderTarget = new THREE.WebGLRenderTarget(
@@ -192,7 +193,8 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
             if (glassModel) {
                 glassModel.rotation.x += 0.005;
                 glassModel.rotation.y += 0.005;
-                glassModel.scale.set(0.5,0.5,0.5)
+                // glassModel.position.y += Math.random(0.005);
+                // glassModel.scale.set(0.5,0.5,0.5)
             }
         },
         onResize: (width, height) => {
