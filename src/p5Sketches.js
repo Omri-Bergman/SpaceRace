@@ -138,7 +138,7 @@ class PredefinedShape {
 
     let shape1Points = [], shape2Points = [];
     let currentShape = shape1Points;
-    let offsetMagnitude = 10;
+    let offsetMagnitude = 20;
     let perpVector = isVerticalSplit 
       ? this.p.createVector(1, 0).mult(offsetMagnitude)
       : this.p.createVector(0, 1).mult(offsetMagnitude);
@@ -164,7 +164,7 @@ class PredefinedShape {
     }
 
     // Apply random rotations
-    let maxRotation = 0.1;
+    let maxRotation = 0.13;
     let rotation1 = this.p.random(-maxRotation, maxRotation);
     let rotation2 = this.p.random(-maxRotation, maxRotation);
 
@@ -243,7 +243,7 @@ function calculateScaleAndOffset(p, shapes, scaleFactor = 0.8) {
 // Main sketch
 export const sketch1 = (p) => {
   p.setup = () => {
-    let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+    let canvas = p.createCanvas(p.windowWidth*0.9, p.windowHeight*0.9);
     canvas.parent('p5-sketch-1');
     p.noStroke();
 
@@ -309,16 +309,33 @@ export const sketch1 = (p) => {
 // ... (sketch2 remains the same)
 
 export const sketch2 = (p) => {
-    p.setup = () => {
-        let canvas = p.createCanvas(300, 300);
-        canvas.parent('p5-sketch-2');
-    }
 
-    p.draw = () => {
-        p.background(50);
-        p.fill(255, 0, 0);
-        p.rect(p.width / 4, p.height / 4, p.width / 2, p.height / 2);
-        p.fill(255,255,0);
-        p.ellipse(p.mouseX, p.mouseY, 30, 30);
-    }
+  p.setup = () => {
+      let canvas = p.createCanvas(300, p.windowHeight);
+      canvas.parent('p5-sketch-2');
+      p.textSize(64);
+      p.textAlign(p.CENTER, p.CENTER);
+  };
+
+  p.draw = () => {
+      p.background(100, 20, 30, 100);
+      
+
+      
+      // Set up the main text style
+      p.fill(255, 200, 100);
+      p.stroke(255, 100, 50);
+      p.strokeWeight(2);
+      
+      // Hebrew text: "שלום עולם ברוך הבא לכאן"
+      // Meaning: "Hello world welcome here"
+      let hebrewText = " איזה אחלה חלל   ";
+      
+      p.push();
+      p.translate(p.width / 2, p.height / 2);
+      p.rotate(-p.HALF_PI);
+      p.text(hebrewText, 0, 0);
+      p.pop();
+      p.circle(mouseX, mouseY, 100);
+  };
 };

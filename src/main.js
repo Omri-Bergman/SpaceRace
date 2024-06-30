@@ -78,7 +78,6 @@ async function initThreeJS() {
   const particleTexture = textureLoader.load('/textures/particles/star_05.png')
 
   const particlesMaterial = new THREE.PointsMaterial({
-
     sizeAttenuation: true,
     size: 0.1,
     alphaMap: particleTexture,
@@ -109,7 +108,7 @@ function initScrollManager() {
 
   scrollManager.addSection({
     startY: 0,
-    endY: window.innerHeight,
+    endY: window.innerHeight * 0.8,
     textScrollBehavior: 'static',
     threeJSBehavior: 'static',
     onEnter: () => {
@@ -144,58 +143,31 @@ function initScrollManager() {
     });
   }
 
-
-  let previousProgress = 0;
-
   scrollManager.addSection({
-    startY: window.innerHeight,
-    endY: window.innerHeight * 2,
+    startY: window.innerHeight* 0.8,
+    endY: window.innerHeight * 4,
     textScrollBehavior: 'static',
     threeJSBehavior: 'scroll',
     onEnter: () => {
-      scene.add(secondSectionObjects.objects);
-      // Initially position objects one screen height below the view
-      console.log("POS Y: ",secondSectionObjects.objects.position.y)
-      secondSectionObjects.objects.position.y = -3;
-      // secondSectionObjects.objects.position.y = -window.innerHeight * 0.3;
+        scene.add(secondSectionObjects.objects);
+        const mainObject = secondSectionObjects.objects.children[0];
+        mainObject.rotation.x = 0; // Reset rotation
+        mainObject.position.z = 0; // Reset z position
+        secondSectionObjects.objects.position.y = -3;
+        this.previousProgress = 0; // Reset progress
+
     },
     onLeave: () => {
       scene.remove(secondSectionObjects.objects);
     },
-    onScroll: (scrollY) => {
-
-      console.log("OBJ: ",secondSectionObjects.objects.children)
-      const sectionScrollY = scrollY - window.innerHeight;
-      const progress = sectionScrollY / window.innerHeight;
-      console.log("section 2 proggress: ",progress)
-      let angle = secondSectionObjects.objects.children[0].rotation.x;
-      const rotationAmount = Math.abs(progress - previousProgress) * 0.1
-      const scrollingDown = progress > previousProgress;
-
-      if (progress > 0.4 && angle >= -1) {
-              // Apply rotation based on scroll direction
-      if (scrollingDown) {
-        secondSectionObjects.objects.children[0].rotation.x -= rotationAmount;
-      } else {
-        secondSectionObjects.objects.children[0].rotation.x += rotationAmount;
-      }
-        console.log(secondSectionObjects.objects.children[0].rotation.x)
-      }
-      if (angle <= -1) {
-        secondSectionObjects.objects.children[0].position.z -= progress * 0.4
-      }
-      // secondSectionObjects.objects.children[0].rotation.x -= progress * 0.2
-      if (progress > 0.7) { // Start animation when 90% through the section
-      //   console.log("90%")
+    onScroll: (scrollY, progress, previousProgress) => {
+      console.log("OBJ: ", secondSectionObjects.objects.children);
+      console.log("section 2 progress: ", progress);
+  
+      if (progress > 0.7) {
         animateObjectsOut(secondSectionObjects);
-      // } else {
-      //   animateObjectsIn(secondSectionObjects.objects, progress);
       }
-      previousProgress = progress;
-
     }
-
-
   });
 
   function animateObjectsIn(objects, progress) {

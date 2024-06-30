@@ -7,19 +7,20 @@ export class ScrollManager {
     this.scrollY = 0;
     this.textElement = textElementSelector ? document.querySelector(textElementSelector) : null;
     this.updateCameraPosition = updateCameraPositionFunc;
-
   }
 
   addSection(config) {
-    this.sections.push({
+    const section = {
       startY: typeof config.startY === 'function' ? config.startY : () => config.startY,
       endY: typeof config.endY === 'function' ? config.endY : () => config.endY,
       textScrollBehavior: config.textScrollBehavior,
       threeJSBehavior: config.threeJSBehavior,
       onEnter: config.onEnter || (() => {}),
       onLeave: config.onLeave || (() => {}),
-      onScroll: config.onScroll || (() => {})
-    });
+      onScroll: config.onScroll || (() => {}),
+      previousProgress: 0  // Add this line
+    };
+    this.sections.push(section);
     // Sort sections by startY to ensure they're in order
     this.sections.sort((a, b) => a.startY() - b.startY());
   }
@@ -28,7 +29,6 @@ export class ScrollManager {
     this.scrollY = newScrollY;
     const newSectionIndex = this.getSectionIndexForScrollY(newScrollY);
 
-    
     if (newSectionIndex !== this.currentSectionIndex) {
       // Section changed
       if (this.currentSectionIndex !== -1) {
@@ -42,7 +42,11 @@ export class ScrollManager {
 
     // Call onScroll for current section if we're in a section
     if (this.currentSectionIndex !== -1) {
-      this.sections[this.currentSectionIndex].onScroll(newScrollY);
+      const currentSection = this.sections[this.currentSectionIndex];
+      const sectionScrollY = newScrollY - currentSection.startY();
+      const progress = sectionScrollY / (currentSection.endY() - currentSection.startY());
+      currentSection.onScroll(newScrollY, progress, currentSection.previousProgress);
+      currentSection.previousProgress = progress;
     }
 
     this.updateThreeJS();
@@ -55,13 +59,10 @@ export class ScrollManager {
     );
   }
 
-// In ScrollManager class
-updateThreeJS() {
+  updateThreeJS() {
     if (this.currentSectionIndex === -1) return;
     const currentSection = this.sections[this.currentSectionIndex];
-    // console.log('Current section:', this.currentSectionIndex, 'Behavior:', currentSection.threeJSBehavior);
     if (currentSection.threeJSBehavior === 'static') {
-      // console.log('Static behavior, resetting camera');
       if (this.updateCameraPosition) {
         this.updateCameraPosition(0, currentSection.startY(), currentSection.endY());
       }
@@ -69,7 +70,6 @@ updateThreeJS() {
       console.log('Scroll behavior');
       if (this.updateCameraPosition) {
         const sectionScrollY = this.scrollY - currentSection.startY();
-        // console.log('Section scroll:', sectionScrollY);
         this.updateCameraPosition(sectionScrollY, currentSection.startY(), currentSection.endY());
       }
     }

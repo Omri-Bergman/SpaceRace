@@ -41,45 +41,23 @@ export function initFirstSectionThree() {
 
     // Create planet group
     const planetGroup = new THREE.Group();
-    objects.add(planetGroup);
+    // objects.add(planetGroup);
 
     // Create planet
-    const planetGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const planetGeometry = new THREE.SphereGeometry(0.4, 32, 32);
     const planet = new THREE.Mesh(planetGeometry, material5);
     planetGroup.add(planet);
 
     // Create orbiting moon
-    const moonGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const moonGeometry = new THREE.SphereGeometry(0.08, 16, 16);
     const moon = new THREE.Mesh(moonGeometry, material3);
     moon.position.set(0.8, 0, 0);
     planetGroup.add(moon);
 
-    planetGroup.position.x = -1.5;
+    planetGroup.position.x = -3;
+    planetGroup.position.y = -1;
 
-    // // Create particles
-    // const particlesCount = 1000;
-    // const positions = new Float32Array(particlesCount * 3);
 
-    // for(let i = 0; i < particlesCount; i++) {
-    //     positions[i * 3 + 0] = (Math.random() - 0.5) * 10
-    //     positions[i * 3 + 1] = (Math.random() - 0.5) * 10
-    //     positions[i * 3 + 2] = (Math.random() - 0.5) * 10
-    // }
-
-    // const particlesGeometry = new THREE.BufferGeometry();
-    // particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    // const particlesMaterial = new THREE.PointsMaterial({
-    //     color: parameters.particlesColor,
-    //     sizeAttenuation: true,
-    //     size: 0.1,
-    //     alphaMap: particleTexture,
-    //     transparent: true,
-    //     depthWrite: false
-    // });
-
-    // const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    // objects.add(particles);
 
     // Lights
     const directionalLight = new THREE.DirectionalLight('#ffffff', 3);

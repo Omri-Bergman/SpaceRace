@@ -73,9 +73,13 @@ p {
 .p5-container {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    width: 102%;
     height: 100%;
+}
+
+#p5-sketch-1 {
+    left: 4%;
+    /* width: 50%; */
 }
 
 .content-overlay {
