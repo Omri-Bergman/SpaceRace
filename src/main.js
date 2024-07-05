@@ -58,9 +58,9 @@ async function initThreeJS() {
   directionalLight.position.set(5, 5, 5);
   scene.add(directionalLight);
 
-  // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-  // pointLight.position.set(0, 0, 10);
-  // scene.add(pointLight);
+  const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+  pointLight.position.set(0, 0, 10);
+  scene.add(pointLight);
 
   // Create particles
   const particlesCount = 1000;
@@ -89,7 +89,7 @@ async function initThreeJS() {
   scene.add(particles);
 
   try {
-    glassModel = await loadGlassModel('shape3D.gltf');
+    glassModel = await loadGlassModel('box3D.gltf');
   } catch (error) {
     console.error('Failed to load glass model:', error);
   }

@@ -78,7 +78,14 @@ p {
 }
 
 #p5-sketch-1 {
-    left: 4%;
+    left: 0%;
+    top: 0%
+    /* width: 50%; */
+}
+
+#p5-sketch-2 {
+    position: fixed;
+    z-index: 10;
     /* width: 50%; */
 }
 
@@ -105,10 +112,24 @@ h1 {
 
 @font-face {
     font-family: 'alfaBravo';
-    src: url('fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95') format('ttf');
+    src: url('fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95') format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
+
+@font-face {
+    font-family: 'david';
+    src: url('fonts/VC_david-Light.otf') format('opentype');
+    font-weight: 300; /* Light weight */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'narkisBlock';
+    src: url('fonts/NarkissBlock-Regular.otf') format('opentype');
+    font-weight: normal; /* Light weight */
+    font-style: normal;
+}
 
 @media (max-width: 768px) {
     h1, h2 {

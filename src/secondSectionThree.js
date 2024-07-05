@@ -7,23 +7,25 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
     const objects = new THREE.Group();
 
     const glassParams = {
-        thickness: 0.05,
+        thickness: 0.28215,
         ior: 0.9,
         chromaticAberration:0.0172,
         roughness: 0.004,
-        milkiness: 1.196
+        milkiness: 0.852
     };
 
     function createTextMesh(text, width, height) {
         const textMesh = new Text()
         textMesh.text = text
-        textMesh.fontSize = 0.2
+        textMesh.fontSize = 0.12
         textMesh.color = 0xffffff
         textMesh.maxWidth = width
         textMesh.anchorX = 'right'
+        textMesh.direction = 'rtl'  // Set text direction to right-to-left
         textMesh.anchorY = 'middle'
         textMesh.textAlign = 'right'
-        textMesh.font = 'fonts/AlfaBravo-Regular.6736174eba9f1fd6e03a3d8425824f95.ttf'  // Just specify the font name here
+        textMesh.lineHeight = 1.4 
+        textMesh.font = 'fonts/VC_david-Light.otf'  // Just specify the font name here
         textMesh.sync()
         textMesh.position.set(3,0,0)
     
@@ -32,17 +34,24 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
     
     // Hebrew text about astronomy
     const hebrewText = `
-    אסטרונומיה היא המדע העוסק בחקר גרמי השמים והיקום. היא כוללת תצפיות וחקר של כוכבים, פלנטות, גלקסיות, וכל התופעות המתרחשות מחוץ לכדור הארץ.
-    
-    אסטרונומים משתמשים במגוון כלים, כולל טלסקופים קרקעיים וחלליים, לחקור את היקום. הם חוקרים נושאים כמו היווצרות כוכבים, מבנה הגלקסיות, והתפתחות היקום מאז המפץ הגדול.
-    
-    אחד הנושאים המרתקים באסטרונומיה הוא חיפוש אחר חיים מחוץ לכדור הארץ. מדענים מחפשים פלנטות דמויות כדור הארץ באזורים הניתנים למגורים סביב כוכבים אחרים, ומנסים לגלות סימנים לחיים או תנאים המתאימים לחיים.
-    
-    האסטרונומיה ממשיכה להתפתח עם טכנולוגיות חדשות, מובילה לגילויים מרגשים ומרחיבה את הבנתנו על היקום העצום והמסתורי שבו אנו חיים.
+    שאיפת האדם לחלל: מסע אל הבלתי נודע
+    מאז ומתמיד, האנושות הביטה אל השמיים בפליאה ובתשוקה לחקור את היקום הנשגב מבינתנו.
+    הכמיהה לגלות עולמות חדשים ולהרחיב את גבולות
+    הידע האנושי הניעה אותנו לפתח טכנולוגיות מתקדמות.
+    מחקר החלל פתח בפנינו אופקים חדשים, מאפשר לנו להבין
+    טוב יותר את מקומנו ביקום האינסופי.
+    תחנות החלל והלוויינים מספקים לנו מידע יקר ערך על כדור הארץ,
+    מסייעים בחיזוי מזג אוויר ובניטור שינויי אקלים.
+    הנחיתה על הירח הוכיחה כי אין גבול ליכולת האנושית
+    כאשר אנו מאחדים כוחות למען מטרה משותפת.
+    חקר החלל ממשיך לעורר השראה בקרב מדענים, מהנדסים וחולמים,
+    מניע אותנו לפתור בעיות מורכבות ולחדש.
+    בעוד אנו צועדים אל עבר עתיד של מסעות בין-כוכביים, אנו מגלים לא רק את סודות היקום,
+    אלא גם את עוצמת הרוח האנושית.
     `;
     
     const textMesh = createTextMesh(hebrewText, 5, 0);
-    textMesh.position.z = -5;
+    textMesh.position.z = -100;
     objects.add(textMesh);
 
 
@@ -165,6 +174,9 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
             }
         });
         objects.add(glassModel);
+        glassModel.scale.set(0.45,0.45,0.45)
+        glassModel.position.set(1.3,1,1)
+
     }
 
     // Add GUI controls
@@ -184,6 +196,7 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
     glassFolder.add(glassParams, 'milkiness', 0, 4).onChange(value => {
         glassMaterial.uniforms.milkiness.value = value;
     });
+
     return {
         objects,
         glassModel,
@@ -191,10 +204,28 @@ export function initSecondSectionThree(scene, camera, renderer, glassModel, gui)
         renderTarget,
         animate: (deltaTime, elapsedTime) => {
             if (glassModel) {
+                // Rotation
                 glassModel.rotation.x += 0.005;
                 glassModel.rotation.y += 0.005;
-                // glassModel.position.y += Math.random(0.005);
-                // glassModel.scale.set(0.5,0.5,0.5)
+
+        
+                // Position oscillation
+                const amplitudeX = 0.4; // Max distance on X axis
+                const amplitudeY = 0.35; // Max distance on Y axis
+                const amplitudeZ = 0.45; // Max distance on Z axis
+                const frequencyX = 0.5; // Speed of oscillation on X axis
+                const frequencyY = 0.5; // Speed of oscillation on Y axis
+                const frequencyZ = 0.4; // Speed of oscillation on Z axis
+        
+                // Calculate new positions using sine waves
+                const newX = Math.sin(elapsedTime * frequencyX) * amplitudeX;
+                const newY = Math.sin(elapsedTime * frequencyY) * amplitudeY;
+                const newZ = Math.sin(elapsedTime * frequencyZ) * amplitudeZ;
+        
+                // Apply the new positions
+                glassModel.position.x = newX;
+                glassModel.position.y = newY;
+                glassModel.position.z = newZ;
             }
         },
         onResize: (width, height) => {

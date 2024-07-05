@@ -65,16 +65,16 @@ export function initFirstSectionThree() {
     objects.add(directionalLight);
 
     // Setup debug GUI
-    const gui = new GUI();
-    gui.addColor(parameters, 'moonColor').onChange(() => {
-        material3.color.set(parameters.moonColor);
-    });
-    gui.addColor(parameters, 'planetColor').onChange(() => {
-        material5.color.set(parameters.planetColor);
-    });
-    gui.addColor(parameters, 'particlesColor').onChange(() => {
-        particlesMaterial.color.set(parameters.particlesColor);
-    });
+    // const gui = new GUI();
+    // gui.addColor(parameters, 'moonColor').onChange(() => {
+    //     material3.color.set(parameters.moonColor);
+    // });
+    // gui.addColor(parameters, 'planetColor').onChange(() => {
+    //     material5.color.set(parameters.planetColor);
+    // });
+    // gui.addColor(parameters, 'particlesColor').onChange(() => {
+    //     particlesMaterial.color.set(parameters.particlesColor);
+    // });
 
     return {
         objects,
