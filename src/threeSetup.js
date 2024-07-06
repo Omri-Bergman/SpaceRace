@@ -41,7 +41,7 @@ export function initFirstSectionThree() {
 
     // Create planet group
     const planetGroup = new THREE.Group();
-    // objects.add(planetGroup);
+    objects.add(planetGroup);
 
     // Create planet
     const planetGeometry = new THREE.SphereGeometry(0.4, 32, 32);
@@ -51,10 +51,10 @@ export function initFirstSectionThree() {
     // Create orbiting moon
     const moonGeometry = new THREE.SphereGeometry(0.08, 16, 16);
     const moon = new THREE.Mesh(moonGeometry, material3);
-    moon.position.set(0.8, 0, 0);
+    moon.position.set(4, 0, 0);
     planetGroup.add(moon);
 
-    planetGroup.position.x = -3;
+    planetGroup.position.x = 1;
     planetGroup.position.y = -1;
 
 

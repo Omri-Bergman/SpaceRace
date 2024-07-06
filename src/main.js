@@ -1,21 +1,17 @@
-import { initFirstSectionThree } from './threeSetup.js';
-import { initSecondSectionThree } from './secondSectionThree.js';
-import { sketch1, sketch2 } from './p5Sketches.js';
-import { ScrollManager } from './scrollManager.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import GUI from 'lil-gui';
 import gsap from 'gsap';
 
-
+import { initFirstSectionThree } from './threeSetup.js';
+import { initSecondSectionThree } from './secondSectionThree.js';
+import { sketch1, sketch2 } from './p5Sketches.js';
 
 let scene, camera, renderer, glassModel, particles;
-let firstSectionObjects, secondSectionObjects;
-let isAnimatingOut = false;
+let firstSectionObjects, secondSection;
 const clock = new THREE.Clock();
 let previousTime = 0;
 let gui;
-let scrollManager;
 
 // Function to load the GLTF model
 function loadGlassModel(url) {
@@ -39,7 +35,8 @@ function loadGlassModel(url) {
 
 async function initThreeJS() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+  // scene.background = new THREE.Color("B");
+    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.z = 6;
 
   renderer = new THREE.WebGLRenderer({
@@ -58,13 +55,6 @@ async function initThreeJS() {
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(5, 5, 5);
   scene.add(directionalLight);
-
-  // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-  // scene.add(ambientLight);
-
-  // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-  // directionalLight.position.set(5, 5, 5);
-  // scene.add(directionalLight);
 
   const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   pointLight.position.set(0, 0, 10);
@@ -98,108 +88,24 @@ async function initThreeJS() {
 
   try {
     glassModel = await loadGlassModel('box3D.gltf');
+    // scene.add(glassModel);
   } catch (error) {
     console.error('Failed to load glass model:', error);
   }
 }
 
-function updateCameraPosition(sectionScrollY, sectionStartY, sectionEndY) {
-  const sectionHeight = sectionEndY - sectionStartY;
-  const scrollProgress = Math.max(0, Math.min(1, sectionScrollY / sectionHeight));
+function updateCameraPosition(scrollY) {
   const totalCameraMove = 4;
+  const scrollProgress = Math.min(scrollY / (window.innerHeight * 0.8), 1);
   const newY = -scrollProgress * totalCameraMove;
   camera.position.y = newY;
-}
-
-function initScrollManager() {
-  scrollManager = new ScrollManager('.scrollable-text', updateCameraPosition);
-
-  scrollManager.addSection({
-    startY: 0,
-    endY: window.innerHeight * 0.8,
-    textScrollBehavior: 'static',
-    threeJSBehavior: 'static',
-    onEnter: () => {
-      console.log("enter")
-      scene.add(firstSectionObjects.objects);
-
-    },
-    onLeave: () => {
-      scene.remove(firstSectionObjects.objects);
-    },
-    onScroll: (scrollY) => {
-      const progress = scrollY / window.innerHeight;
-      console.log("section 1 proggress: ",progress, "obj Y: ", firstSectionObjects.objects.position.y)
-      if (progress > 0.7) { // Start animation when 90% through the section
-        console.log("90%")
-        animateObjectsOut(firstSectionObjects.objects);
-      }
-    }
-  });
-
-  function animateObjectsOut(objects) {
-    if (isAnimatingOut) return; // Prevent multiple animations
-    isAnimatingOut = true;
-
-    gsap.to(objects.position, {
-      y: 4, // Move 10 units up (adjust as needed)
-      duration: 4, // Animation duration in seconds
-      ease: "power2.inOut",
-      onComplete: () => {
-        isAnimatingOut = false;
-      }
-    });
-  }
-
-  scrollManager.addSection({
-    startY: window.innerHeight* 0.8,
-    endY: window.innerHeight * 4,
-    textScrollBehavior: 'static',
-    threeJSBehavior: 'scroll',
-    onEnter: () => {
-        scene.add(secondSectionObjects.objects);
-        const mainObject = secondSectionObjects.objects.children[0];
-        mainObject.rotation.x = 0; // Reset rotation
-        mainObject.position.z = 0; // Reset z position
-        secondSectionObjects.objects.position.y = -3;
-        this.previousProgress = 0; // Reset progress
-
-    },
-    onLeave: () => {
-      scene.remove(secondSectionObjects.objects);
-    },
-    onScroll: (scrollY, progress, previousProgress) => {
-      console.log("OBJ: ", secondSectionObjects.objects.children);
-      console.log("section 2 progress: ", progress);
-  
-      if (progress > 0.7) {
-        animateObjectsOut(secondSectionObjects);
-      }
-    }
-  });
-
-  function animateObjectsIn(objects, progress) {
-    // Clamp progress between 0 and 1
-    progress = Math.min(Math.max(progress, 0), 1);
-
-    // Calculate the target Y position
-    const startY = -(window.innerHeight * 0.3); // Start one screen height below
-    const endY = 0; // Final y position when fully scrolled into view
-    const targetY = startY + (endY - startY) * progress;
-
-    // Animate to the target position
-    gsap.to(objects.position, {
-      y: targetY,
-      duration: 0.4, // Short duration for responsive feel
-      ease: "power2.out"
-    });
-  }
 }
 
 function animate() {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
   // Animate particles
   particles.rotation.y = elapsedTime * 0.02;
 
@@ -207,16 +113,11 @@ function animate() {
     firstSectionObjects.animate(deltaTime, elapsedTime);
   }
 
-  // if (secondSectionObjects && secondSectionObjects.animate) {
-  //   secondSectionObjects.animate(deltaTime, elapsedTime);
-    
-  // }
-
+  // Update camera position based on scroll
+  updateCameraPosition(window.scrollY);
 
   // Final render to screen
-  // renderer.setRenderTarget(null);
   renderer.render(scene, camera);
-
 
   requestAnimationFrame(animate);
 }
@@ -229,32 +130,91 @@ function handleResize() {
   if (firstSectionObjects && firstSectionObjects.onResize) {
     firstSectionObjects.onResize(window.innerWidth, window.innerHeight);
   }
+}
 
-  if (secondSectionObjects && secondSectionObjects.onResize) {
-    secondSectionObjects.onResize(window.innerWidth, window.innerHeight);
-  }
-
-  scrollManager.updateSectionHeights();
+function handleScroll() {
+  const scrollY = window.scrollY;
+  
+  // Show/hide second section based on scroll position
+  const secondSectionContainer = document.getElementById('second-section-container');
+  // if (scrollY > window.innerHeight * 0.8) {
+  //   secondSectionContainer.style.display = 'block';
+  // } else {
+  //   secondSectionContainer.style.display = 'none';
+  // }
 }
 
 async function init() {
   await initThreeJS();
-  firstSectionObjects = initFirstSectionThree();
-  scene.add(firstSectionObjects.objects);
+  
+  // firstSectionObjects = initFirstSectionThree();
+  // scene.add(firstSectionObjects.objects);
 
-  // secondSectionObjects = initSecondSectionThree(scene, camera, renderer, glassModel, gui);
-  // if (secondSectionObjects.glassModel) {
-  //   secondSectionObjects.glassModel.material = secondSectionObjects.glassMaterial;
-  //   secondSectionObjects.objects.add(secondSectionObjects.glassModel);
-  // }
-  initScrollManager();
-  new p5(sketch1);
-  new p5(sketch2);
+  const secondSectionContainer = document.getElementById('second-section-container');
+  secondSection = initSecondSectionThree(secondSectionContainer);
 
-  window.addEventListener('scroll', () => scrollManager.updateScroll(window.scrollY));
+  // Initialize p5 sketches
+  new p5(sketch1, document.getElementById('p5-sketch-1'));
+  new p5(sketch2, document.getElementById('p5-sketch-2'));
+
+  // Setup GUI
+  // const firstSectionFolder = gui.addFolder('First Section');
+  // firstSectionFolder.add(firstSectionObjects.planetGroup.rotation, 'x', 0, Math.PI * 2).name('Rotation X');
+  // firstSectionFolder.add(firstSectionObjects.planetGroup.rotation, 'y', 0, Math.PI * 2).name('Rotation Y');
+
+  const secondSectionFolder = gui.addFolder('Second Section');
+  secondSectionFolder.add(secondSection.params, 'enableRotation').name('Enable Rotation');
+  secondSectionFolder.add(secondSection.params, 'transmission', 0, 1).onChange(secondSection.updateParams);
+  secondSectionFolder.add(secondSection.params, 'thickness', 0, 5).onChange(secondSection.updateParams);
+  secondSectionFolder.add(secondSection.params, 'roughness', 0, 1).onChange(secondSection.updateParams);
+  secondSectionFolder.add(secondSection.params, 'envMapIntensity', 0, 3).onChange(secondSection.updateParams);
+
+
+  // Event listeners
+  window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', handleResize);
 
   animate();
 }
 
+function cleanup() {
+  // Remove event listeners
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('resize', handleResize);
+
+  // Dispose of Three.js objects
+  scene.traverse((object) => {
+    if (object.isMesh) {
+      object.geometry.dispose();
+      if (object.material.isMaterial) {
+        object.material.dispose();
+      } else {
+        // an array of materials
+        for (const material of object.material) material.dispose();
+      }
+    }
+  });
+
+  // Dispose of renderer
+  renderer.dispose();
+
+  // Cleanup second section
+  if (secondSection) {
+    secondSection.dispose();
+  }
+
+  // Remove GUI
+  if (gui) gui.destroy();
+
+  // Cleanup p5 sketches if necessary
+  // This depends on how your p5 sketches are set up
+}
+
 document.addEventListener('DOMContentLoaded', init);
+
+// You might want to call cleanup() when the user navigates away from the page
+// or when you want to reset everything
+// window.addEventListener('beforeunload', cleanup);
+
+
+

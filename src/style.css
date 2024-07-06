@@ -17,12 +17,12 @@ html, body {
     top: 0;
     left: 0;
     outline: none;
-    z-index: 1;
+    z-index: 0;
 }
 
 .content-wrapper {
     position: relative;
-    z-index: 2;
+    z-index: 0;
 }
 
 #second-three-container {
@@ -51,12 +51,17 @@ html, body {
     overflow: hidden;
 }
 
+#section1 {
+    height: 150vh;
+}
+
 
 #section2 {
     position: relative;
     overflow: hidden;
     bottom: 0px;
     left: 0px;
+    pointer-events: none;  /* This allows click events to pass through to elements beneath */
 }
 
 h1, h2 {
