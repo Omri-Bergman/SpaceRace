@@ -44,19 +44,27 @@ async function initThreeJS() {
 
   renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('canvas.webgl'),
-    alpha: true
+    alpha: true,
+    antialias: true
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   gui = new GUI();
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
-
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(5, 5, 5);
   scene.add(directionalLight);
+
+  // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  // scene.add(ambientLight);
+
+  // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  // directionalLight.position.set(5, 5, 5);
+  // scene.add(directionalLight);
 
   const pointLight = new THREE.PointLight(0xffffff, 1, 100);
   pointLight.position.set(0, 0, 10);
@@ -199,23 +207,16 @@ function animate() {
     firstSectionObjects.animate(deltaTime, elapsedTime);
   }
 
-  if (secondSectionObjects && secondSectionObjects.animate) {
-    secondSectionObjects.animate(deltaTime, elapsedTime);
-    // Render the scene behind the glass to the render target
-    if (secondSectionObjects.glassModel) secondSectionObjects.glassModel.visible = false;
-    renderer.setRenderTarget(secondSectionObjects.renderTarget);
-    renderer.render(scene, camera);
+  // if (secondSectionObjects && secondSectionObjects.animate) {
+  //   secondSectionObjects.animate(deltaTime, elapsedTime);
+    
+  // }
 
-    // Update the glass material with the render target texture
-    secondSectionObjects.glassMaterial.uniforms.tDiffuse.value = secondSectionObjects.renderTarget.texture;
-
-    // Make glass model visible again
-    if (secondSectionObjects.glassModel) secondSectionObjects.glassModel.visible = true;
-  }
 
   // Final render to screen
-  renderer.setRenderTarget(null);
+  // renderer.setRenderTarget(null);
   renderer.render(scene, camera);
+
 
   requestAnimationFrame(animate);
 }
@@ -241,12 +242,11 @@ async function init() {
   firstSectionObjects = initFirstSectionThree();
   scene.add(firstSectionObjects.objects);
 
-  secondSectionObjects = initSecondSectionThree(scene, camera, renderer, glassModel, gui);
-  if (secondSectionObjects.glassModel) {
-    secondSectionObjects.glassModel.material = secondSectionObjects.glassMaterial;
-    secondSectionObjects.objects.add(secondSectionObjects.glassModel);
-
-  }
+  // secondSectionObjects = initSecondSectionThree(scene, camera, renderer, glassModel, gui);
+  // if (secondSectionObjects.glassModel) {
+  //   secondSectionObjects.glassModel.material = secondSectionObjects.glassMaterial;
+  //   secondSectionObjects.objects.add(secondSectionObjects.glassModel);
+  // }
   initScrollManager();
   new p5(sketch1);
   new p5(sketch2);
