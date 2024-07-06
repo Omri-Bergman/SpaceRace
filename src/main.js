@@ -7,32 +7,12 @@ import { initFirstSectionThree } from './threeSetup.js';
 import { initSecondSectionThree } from './secondSectionThree.js';
 import { sketch1, sketch2 } from './p5Sketches.js';
 
-let scene, camera, renderer, glassModel;
+let scene, camera, renderer;
 let particles = [];
 let firstSectionObjects, secondSection;
 const clock = new THREE.Clock();
 let previousTime = 0;
 let gui;
-
-// Function to load the GLTF model
-function loadGlassModel(url) {
-  return new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-    loader.load(url,
-      (gltf) => {
-        console.log('Model loaded successfully');
-        resolve(gltf.scene);
-      },
-      (progress) => {
-        console.log(`Loading model... ${(progress.loaded / progress.total * 100).toFixed(2)}%`);
-      },
-      (error) => {
-        console.error('Error loading model:', error);
-        reject(error);
-      }
-    );
-  });
-}
 
 async function initThreeJS() {
   scene = new THREE.Scene();
@@ -101,14 +81,6 @@ const particlesCount = 350;
  particles[1] = createParticles(particlesCount, '/textures/particle2.png', 0.08, scene);
  particles[2] = createParticles(particlesCount, '/textures/particle3.png', 0.07, scene);
 
- 
-
-  try {
-    glassModel = await loadGlassModel('box3D.gltf');
-    // scene.add(glassModel);
-  } catch (error) {
-    console.error('Failed to load glass model:', error);
-  }
 }
 
 function updateCameraPosition(scrollY) {
@@ -193,6 +165,8 @@ async function init() {
   secondSectionFolder.add(secondSection.params, 'thickness', 0, 5).onChange(secondSection.updateParams);
   secondSectionFolder.add(secondSection.params, 'roughness', 0, 1).onChange(secondSection.updateParams);
   secondSectionFolder.add(secondSection.params, 'envMapIntensity', 0, 3).onChange(secondSection.updateParams);
+  secondSectionFolder.add(secondSection.params, 'iridescence', 0, 10).onChange(secondSection.updateParams);
+  secondSectionFolder.add(secondSection.params, 'dispersion', 0, 10).onChange(secondSection.updateParams);
 
 
   // Event listeners

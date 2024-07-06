@@ -47,7 +47,7 @@ export function initSecondSectionThree(container) {
         // Create particle geometry
         const positions = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
-            positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+            positions[i * 3 + 0] = (Math.random() - 0.5) * 20;
             positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
             positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
         }
@@ -173,13 +173,13 @@ export function initSecondSectionThree(container) {
 
             // Load the fonts before rendering
             Promise.all([
-                new FontFace('david', 'url(fonts/VC_david-Light.otf)').load(),
+                new FontFace('david', 'url(fonts/VC_david-Medium.otf)').load(),
                 new FontFace('davidBold', 'url(fonts/VC_david-Bold.otf)').load()
             ]).then(loadedFonts => {
                 loadedFonts.forEach(font => document.fonts.add(font));
 
                 // Render the text
-                renderRTLText(context, textData, width - 300, 550, width - 600, 51);
+                renderRTLText(context, textData, width - 300, 550, width - 600, 45);
                 const texture = new THREE.CanvasTexture(canvas);
                 texture.needsUpdate = true;
                 texture.minFilter = THREE.LinearFilter;
@@ -391,7 +391,7 @@ export function initSecondSectionThree(container) {
 
 
       // Animate particles
-  particles[0].rotation.y = elapsedTime * 0.02;
+  particles[0].rotation.y = elapsedTime * 0.07;
   particles[1].rotation.y = elapsedTime * -0.03; 
   particles[2].rotation.y = elapsedTime * 0.01; 
 
@@ -431,6 +431,8 @@ export function initSecondSectionThree(container) {
             glassMaterial.roughness = params.roughness;
             glassMaterial.envMapIntensity = params.envMapIntensity;
             glassMaterial.needsUpdate = true;
+            glassMaterial.iridescence = params.iridescence;
+            glassMaterial.dispersion = params.iridescence;
         },
         toggleRotation: (enable) => {
             params.enableRotation = enable;
