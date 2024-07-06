@@ -7,7 +7,8 @@ import { initFirstSectionThree } from './threeSetup.js';
 import { initSecondSectionThree } from './secondSectionThree.js';
 import { sketch1, sketch2 } from './p5Sketches.js';
 
-let scene, camera, renderer, glassModel, particles;
+let scene, camera, renderer, glassModel;
+let particles = [];
 let firstSectionObjects, secondSection;
 const clock = new THREE.Clock();
 let previousTime = 0;
@@ -61,30 +62,46 @@ async function initThreeJS() {
   scene.add(pointLight);
 
   // Create particles
-  const particlesCount = 1000;
-  const positions = new Float32Array(particlesCount * 3);
-
-  for (let i = 0; i < particlesCount; i++) {
-    positions[i * 3 + 0] = (Math.random() - 0.5) * 10
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+  // Function to create particles
+function createParticles(count, texturePath, size, scene) {
+  // Create particle geometry
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+      positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
   }
 
   const particlesGeometry = new THREE.BufferGeometry();
   particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const textureLoader = new THREE.TextureLoader();
-  const particleTexture = textureLoader.load('/textures/particles/star_05.png')
 
+  // Load texture
+  const textureLoader = new THREE.TextureLoader();
+  const particleTexture = textureLoader.load(texturePath);
+
+  // Create material
   const particlesMaterial = new THREE.PointsMaterial({
-    sizeAttenuation: true,
-    size: 0.1,
-    alphaMap: particleTexture,
-    transparent: true,
-    depthWrite: false
+      sizeAttenuation: true,
+      size: size,
+      alphaMap: particleTexture,
+      transparent: true,
+      depthWrite: false
   });
 
-  particles = new THREE.Points(particlesGeometry, particlesMaterial);
+  // Create points and add to scene
+  const particles = new THREE.Points(particlesGeometry, particlesMaterial);
   scene.add(particles);
+
+  return particles;
+}
+
+// Usage
+const particlesCount = 350;
+ particles[0] = createParticles(particlesCount, '/textures/particle1.png', 0.06, scene);
+ particles[1] = createParticles(particlesCount, '/textures/particle2.png', 0.08, scene);
+ particles[2] = createParticles(particlesCount, '/textures/particle3.png', 0.07, scene);
+
+ 
 
   try {
     glassModel = await loadGlassModel('box3D.gltf');
@@ -107,7 +124,9 @@ function animate() {
   previousTime = elapsedTime;
 
   // Animate particles
-  particles.rotation.y = elapsedTime * 0.02;
+  particles[0].rotation.y = elapsedTime * 0.02;
+  particles[1].rotation.y = elapsedTime * -0.03; 
+  particles[2].rotation.y = elapsedTime * 0.01; 
 
   if (firstSectionObjects && firstSectionObjects.animate) {
     firstSectionObjects.animate(deltaTime, elapsedTime);
@@ -132,11 +151,17 @@ function handleResize() {
   }
 }
 
+
 function handleScroll() {
   const scrollY = window.scrollY;
   
   // Show/hide second section based on scroll position
   const secondSectionContainer = document.getElementById('second-section-container');
+  if (secondSection && secondSection.updateScrollPosition) {
+    const secondSectionTop = document.getElementById('section2').offsetTop;
+    const relativeScrollY = scrollY - secondSectionTop;
+    secondSection.updateScrollPosition(relativeScrollY);
+  }
   // if (scrollY > window.innerHeight * 0.8) {
   //   secondSectionContainer.style.display = 'block';
   // } else {

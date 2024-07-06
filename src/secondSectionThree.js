@@ -3,13 +3,24 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import GUI from 'lil-gui';
+import gsap from 'gsap';
 
 export function initSecondSectionThree(container) {
-    let particles;
+    let particles = [];
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let selectedObject = null;
+    let offset = new THREE.Vector3();
+    let isDragging = false;
+    let previousMousePosition = {
+        x: 0,
+        y: 0
+    };
+    let resetAnimation;
     // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ 
+    const renderer = new THREE.WebGLRenderer({
         antialias: true,
         alpha: true  // This enables transparency
     });
@@ -32,31 +43,44 @@ export function initSecondSectionThree(container) {
     scene.add(directionalLight);
 
 
-// Create particles
-const particlesCount = 500;
-const positions = new Float32Array(particlesCount * 3);
-
-for (let i = 0; i < particlesCount; i++) {
-  positions[i * 3 + 0] = (Math.random() - 0.5) * 10
-  positions[i * 3 + 1] = (Math.random() - 0.5) * 10
-  positions[i * 3 + 2] = (Math.random() - 0.5) * 10
-}
-
-const particlesGeometry = new THREE.BufferGeometry();
-particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const textureLoader = new THREE.TextureLoader();
-const particleTexture = textureLoader.load('/textures/particles/star_05.png')
-
-const particlesMaterial = new THREE.PointsMaterial({
-  sizeAttenuation: true,
-  size: 0.08,
-  alphaMap: particleTexture,
-  transparent: true,
-  depthWrite: false
-});
-
- particles = new THREE.Points(particlesGeometry, particlesMaterial);
-scene.add(particles);
+    function createParticles(count, texturePath, size, scene) {
+        // Create particle geometry
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        }
+      
+        const particlesGeometry = new THREE.BufferGeometry();
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      
+        // Load texture
+        const textureLoader = new THREE.TextureLoader();
+        const particleTexture = textureLoader.load(texturePath);
+      
+        // Create material
+        const particlesMaterial = new THREE.PointsMaterial({
+            sizeAttenuation: true,
+            size: size,
+            alphaMap: particleTexture,
+            transparent: true,
+            depthWrite: false
+        });
+      
+        // Create points and add to scene
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+      
+        return particles;
+      }
+      
+      // Usage
+      const particlesCount = 150;
+       particles[0] = createParticles(particlesCount, '/textures/particle1.png', 0.06, scene);
+       particles[1] = createParticles(particlesCount, '/textures/particle2.png', 0.08, scene);
+       particles[2] = createParticles(particlesCount, '/textures/particle3.png', 0.07, scene);
+      
 
 
     // Parameters
@@ -97,7 +121,9 @@ scene.add(particles);
             canvas.height = height * dpr;
             const context = canvas.getContext('2d');
             context.scale(dpr, dpr);
-            // context.clearRect(0, 0, canvas.width, canvas.height);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            // context.fillStyle = 'red';
+            // context.fillRect(0, 0, canvas.width, canvas.height);
 
 
             // Set up the default text style
@@ -110,32 +136,32 @@ scene.add(particles);
             function renderRTLText(context, textData, x, y, maxWidth, defaultLineHeight) {
                 const RLO = '\u202E';  // Right-to-Left Override
                 const PDF = '\u202C';  // Pop Directional Formatting
-                
+
                 let currentY = y;
-                
+
                 textData.forEach(([line, style]) => {
                     // Apply custom style
-                    const fontSize = style.size || 60;
+                    const fontSize = style.size || 30;
                     const fontFamily = style.font || 'davidBold';
                     context.font = `bold ${fontSize}px "${fontFamily}"`;
                     const lineHeight = style.lineHeight || defaultLineHeight;
-            
+
                     // Wrap each line with RLO and PDF
                     let remainingText = line;
-                    
+
                     while (remainingText.length) {
                         let idx = remainingText.length;
                         while (idx > 0 && context.measureText(RLO + remainingText.slice(0, idx) + PDF).width > maxWidth) {
                             idx--;
                         }
-                        
+
                         if (idx === remainingText.length) {
                             context.fillText(RLO + remainingText + PDF, x, currentY);
                             break;
                         } else {
                             let lastSpace = remainingText.lastIndexOf(' ', idx);
                             if (lastSpace > 0) idx = lastSpace;
-                            
+
                             context.fillText(RLO + remainingText.slice(0, idx) + PDF, x, currentY);
                             remainingText = remainingText.slice(idx).trim();
                             currentY += lineHeight;
@@ -153,7 +179,7 @@ scene.add(particles);
                 loadedFonts.forEach(font => document.fonts.add(font));
 
                 // Render the text
-                renderRTLText(context, textData, width - 50, 50, width - 500, 80);
+                renderRTLText(context, textData, width - 300, 550, width - 600, 51);
                 const texture = new THREE.CanvasTexture(canvas);
                 texture.needsUpdate = true;
                 texture.minFilter = THREE.LinearFilter;
@@ -178,16 +204,16 @@ scene.add(particles);
             return createTextTexture(textData, 2048, 2048);
         })
         .then(backgroundTexture => {
-            const backgroundGeometry = new THREE.PlaneGeometry(20, 20);
-            const backgroundMaterial = new THREE.MeshBasicMaterial({ 
+            const backgroundGeometry = new THREE.PlaneGeometry(40, 40);
+            const backgroundMaterial = new THREE.MeshBasicMaterial({
                 map: backgroundTexture,
-                opacity: 1,
+                // opacity: 1,
                 // blending: THREE.CustomBlending,
                 // blendSrc: THREE.SrcAlphaFactor,
                 // blendDst: THREE.OneMinusSrcAlphaFactor
             });
             const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-            
+
             backgroundMesh.position.z = -5;
             scene.add(backgroundMesh);
         })
@@ -203,7 +229,7 @@ scene.add(particles);
     function loadGlassModel(url) {
         return new Promise((resolve, reject) => {
             const loader = new GLTFLoader();
-            loader.load(url, 
+            loader.load(url,
                 (gltf) => {
                     console.log('Model loaded successfully');
                     resolve(gltf.scene);
@@ -225,7 +251,7 @@ scene.add(particles);
             // Load the model
             const loadedModel = await loadGlassModel('shape3D.gltf');
             console.log('Model loaded:', loadedModel);
-            
+
             // Apply the glass material to the model
             loadedModel.traverse((child) => {
                 if (child.isMesh) {
@@ -252,11 +278,99 @@ scene.add(particles);
     // Call the setup function
     setupGlassModel();
 
+    /**
+     * Mouse
+     */
+
+    
+    function clampPosition(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    window.addEventListener('mousedown', (event) => {
+        const rect = container.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+        raycaster.setFromCamera({ x, y }, camera);
+        const intersects = raycaster.intersectObject(glassModel, true);
+    
+        if (intersects.length > 0) {
+            console.log("Model clicked");
+            isDragging = true;
+            controls.enabled = false;
+            selectedObject = glassModel;
+            // Kill any ongoing reset animation
+            if (resetAnimation) {
+                resetAnimation.kill();
+            }
+            previousMousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+        }
+    });
+
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        if (isDragging && glassModel) {
+            const deltaMove = {
+                x: event.clientX - previousMousePosition.x,
+                y: event.clientY - previousMousePosition.y
+            };
+
+            const movementSpeed = 0.01;
+            glassModel.position.x = clampPosition(glassModel.position.x + deltaMove.x * movementSpeed, -50, 50);
+            glassModel.position.y = clampPosition(glassModel.position.y - deltaMove.y * movementSpeed, -50, 50);
+
+            previousMousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+        }
+    });
+
+    window.addEventListener('mouseup', (event) => {
+        if (isDragging) {
+            isDragging = false;
+            controls.enabled = true;
+            selectedObject = null;
+            // Uncomment the next line if you want the model to reset its position when released
+            resetModelPosition();
+        }
+    });
+
+    function resetModelPosition() {
+        if (glassModel) {
+            // Kill any existing animation
+            if (resetAnimation) {
+                resetAnimation.kill();
+            }
+            // Start a new animation
+            resetAnimation = gsap.to(glassModel.position, {
+                x: 0,
+                y: 0,
+                z: -1,
+                duration: 5,
+            });
+        }
+    }
+
+    function updateScrollPosition(scrollY) {
+        if (glassModel && !isDragging) {
+            const scrollFactor = 0.001;
+            const maxScroll = 500;
+            const clampedScrollY = Math.max(0, Math.min(scrollY, maxScroll));
+            glassModel.position.y = -clampedScrollY * scrollFactor;
+        }
+    }
 
     // Render target for the scene behind the glass
     const renderTarget = new THREE.WebGLRenderTarget(
-        window.innerWidth, 
-        window.innerHeight, 
+        window.innerWidth,
+        window.innerHeight,
         { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter }
     );
 
@@ -267,16 +381,19 @@ scene.add(particles);
         const elapsedTime = clock.getElapsedTime();
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
-      
+
         requestAnimationFrame(animate);
 
-        if (glassModel && params.enableRotation) {
+        if (glassModel && params.enableRotation && !isDragging) {
             glassModel.rotation.x += 0.005;
             glassModel.rotation.y += 0.005;
         }
 
-          // Animate particles
-        particles.rotation.y = elapsedTime * 0.02;
+
+      // Animate particles
+  particles[0].rotation.y = elapsedTime * 0.02;
+  particles[1].rotation.y = elapsedTime * -0.03; 
+  particles[2].rotation.y = elapsedTime * 0.01; 
 
         // Render the scene behind the glass to the render target
         if (glassModel) glassModel.visible = false;
@@ -318,6 +435,7 @@ scene.add(particles);
         toggleRotation: (enable) => {
             params.enableRotation = enable;
         },
+        updateScrollPosition: updateScrollPosition,
         dispose: () => {
             window.removeEventListener('resize', onWindowResize);
             renderer.dispose();

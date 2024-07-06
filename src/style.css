@@ -34,6 +34,7 @@ html, body {
     z-index: 1;
 }
 
+
 .scrollable-text {
     position: absolute;
     top: 0;
@@ -52,7 +53,7 @@ html, body {
 }
 
 #section1 {
-    height: 150vh;
+    height: 120vh;
 }
 
 
