@@ -87,12 +87,12 @@ export function initSecondSectionThree(container) {
     const params = {
         enableSwoopingCamera: false,
         enableRotation: true,
-        transmission: 1,
+        transmission: 0.981,
         thickness: 1,
-        roughness: 0.09,
-        envMapIntensity: 1.5,
-        dispersion: 0.2,
-        iridescence: 0.2
+        roughness: 0.14,
+        envMapIntensity: 1.821,
+        dispersion: 1.89,
+        iridescence: 7.05
     };
 
     // HDR Environment
