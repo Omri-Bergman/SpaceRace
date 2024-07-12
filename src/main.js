@@ -1,23 +1,20 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import GUI from 'lil-gui';
 import gsap from 'gsap';
 
-import { initFirstSectionThree } from './threeSetup.js';
 import { initSecondSectionThree } from './secondSectionThree.js';
 import { sketch1, sketch2 } from './p5Sketches.js';
 
 let scene, camera, renderer;
 let particles = [];
-let firstSectionObjects, secondSection;
+let secondSection;
 const clock = new THREE.Clock();
 let previousTime = 0;
 let gui;
 
 async function initThreeJS() {
   scene = new THREE.Scene();
-  // scene.background = new THREE.Color("B");
-    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.z = 6;
 
   renderer = new THREE.WebGLRenderer({
@@ -100,10 +97,6 @@ function animate() {
   particles[1].rotation.y = elapsedTime * -0.03; 
   particles[2].rotation.y = elapsedTime * 0.01; 
 
-  if (firstSectionObjects && firstSectionObjects.animate) {
-    firstSectionObjects.animate(deltaTime, elapsedTime);
-  }
-
   // Update camera position based on scroll
   updateCameraPosition(window.scrollY);
 
@@ -117,10 +110,6 @@ function handleResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-
-  if (firstSectionObjects && firstSectionObjects.onResize) {
-    firstSectionObjects.onResize(window.innerWidth, window.innerHeight);
-  }
 }
 
 
@@ -134,18 +123,10 @@ function handleScroll() {
     const relativeScrollY = scrollY - secondSectionTop;
     secondSection.updateScrollPosition(relativeScrollY);
   }
-  // if (scrollY > window.innerHeight * 0.8) {
-  //   secondSectionContainer.style.display = 'block';
-  // } else {
-  //   secondSectionContainer.style.display = 'none';
-  // }
 }
 
 async function init() {
   await initThreeJS();
-  
-  // firstSectionObjects = initFirstSectionThree();
-  // scene.add(firstSectionObjects.objects);
 
   const secondSectionContainer = document.getElementById('second-section-container');
   secondSection = initSecondSectionThree(secondSectionContainer);
@@ -153,11 +134,6 @@ async function init() {
   // Initialize p5 sketches
   new p5(sketch1, document.getElementById('p5-sketch-1'));
   new p5(sketch2, document.getElementById('p5-sketch-2'));
-
-  // Setup GUI
-  // const firstSectionFolder = gui.addFolder('First Section');
-  // firstSectionFolder.add(firstSectionObjects.planetGroup.rotation, 'x', 0, Math.PI * 2).name('Rotation X');
-  // firstSectionFolder.add(firstSectionObjects.planetGroup.rotation, 'y', 0, Math.PI * 2).name('Rotation Y');
 
   const secondSectionFolder = gui.addFolder('Second Section');
   secondSectionFolder.add(secondSection.params, 'enableRotation').name('Enable Rotation');
