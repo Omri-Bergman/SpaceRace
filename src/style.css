@@ -8,7 +8,7 @@
     --font-size-base: 26px;
     --font-size-large: 40px;
     --font-size-xlarge: 50px;
-    --font-size-xxlarge: 10rem;
+    --font-size-xxlarge: 13rem;
 
     /* Font families */
     --font-David: 'VC David', sans-serif;
@@ -95,6 +95,12 @@ section, .section, .section2, .section3, .section4, .section5 {
 .section5 { padding-right: 47%; }
 
 #section4 {
+    margin-top: 100vh; /* Adjust this value as needed */
+    margin-bottom: 50vh; /* Adjust this value as needed */
+}
+
+#section3 {
+    margin-left: 25vh;
     margin-top: 100vh; /* Adjust this value as needed */
     margin-bottom: 50vh; /* Adjust this value as needed */
 }

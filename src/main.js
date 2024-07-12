@@ -18,6 +18,7 @@ let marchingCubesEffect;
 const clock = new THREE.Clock();
 let previousTime = 0;
 let gui;
+const marchingCubesScrollSpeed = 0.02; // Adjust this value to change the speed
 
 // Initialize stats
 const stats = new Stats();
@@ -51,13 +52,26 @@ async function initThreeJS() {
   pointLight.position.set(0, 0, 10);
   scene.add(pointLight);
 
+  function getTotalDocumentHeight() {
+    const body = document.body;
+    const html = document.documentElement;
+    
+    return Math.max(
+      body.scrollHeight, body.offsetHeight,
+      html.clientHeight, html.scrollHeight, html.offsetHeight
+    );
+  }
+
   // Create particles
   function createParticles(count, texturePath, size, scene) {
     const positions = new Float32Array(count * 3);
+    const totalHeight = getTotalDocumentHeight();
+    const yScale = totalHeight / window.innerHeight; // Convert document height to Three.js units
+  
     for (let i = 0; i < count; i++) {
-        positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 0] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * yScale * 2 * 3; // Multiply by 2 to center around zero
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
     }
 
     const particlesGeometry = new THREE.BufferGeometry();
@@ -80,10 +94,10 @@ async function initThreeJS() {
     return particles;
   }
 
-  const particlesCount = 350;
-  particles[0] = createParticles(particlesCount, '/textures/particle1.png', 0.06, scene);
-  particles[1] = createParticles(particlesCount, '/textures/particle2.png', 0.08, scene);
-  particles[2] = createParticles(particlesCount, '/textures/particle3.png', 0.07, scene);
+  const particlesCount = 700;
+  particles[0] = createParticles(particlesCount, '/textures/particle1.png', 0.14, scene);
+  particles[1] = createParticles(particlesCount, '/textures/particle2.png', 0.16, scene);
+  particles[2] = createParticles(particlesCount, '/textures/particle3.png', 0.15, scene);
 
   initMarchingCubes();
 }
@@ -95,19 +109,21 @@ function setupGui() {
 
   const effectController = {
     speed: 0.15,
-    numBlobs: 22,
+    numBlobs: 30,
     resolution: 14,
-    isolation: 250,
+    isolation: 488,
+    ballSize: 2.8
   };
 
   marchingCubesFolder.add(effectController, 'speed', 0.1, 8.0, 0.05).onChange(updateMarchingCubes);
   marchingCubesFolder.add(effectController, 'numBlobs', 1, 50, 1).onChange(updateMarchingCubes);
-  marchingCubesFolder.add(effectController, 'resolution', 14, 100, 1).onChange((value) => {
+  marchingCubesFolder.add(effectController, 'resolution', 6, 100, 0.5).onChange((value) => {
     marchingCubesEffect.init(Math.floor(value));
   });
-  marchingCubesFolder.add(effectController, 'isolation', 10, 300, 1).onChange((value) => {
+  marchingCubesFolder.add(effectController, 'isolation', 10, 500, 1).onChange((value) => {
     marchingCubesEffect.isolation = value;
   });
+  marchingCubesFolder.add(effectController, 'ballSize', 0.1, 4).onChange(updateMarchingCubes);
 
   // Store effectController in a place accessible by updateMarchingCubes
   marchingCubesEffect.effectController = effectController;
@@ -131,12 +147,13 @@ function initMarchingCubes() {
   
   // Create the MarchingCubes effect
   marchingCubesEffect = new MarchingCubes(resolution, material, true, true, 100000);
-  
-  const section = document.getElementById('section4');
+  marchingCubesEffect.isolation = 488; // Set initial isolation value
+
+  const section = document.getElementById('section3');
   const rect = section.getBoundingClientRect();
   
-  marchingCubesEffect.position.set(0, 0, 0);
-    marchingCubesEffect.scale.set(5, 5, 5);
+  marchingCubesEffect.position.set(0, 0, -6);
+    marchingCubesEffect.scale.set(10, 10,7);
   marchingCubesEffect.enableUvs = false;
   marchingCubesEffect.enableColors = false;
   marchingCubesEffect.renderOrder = 0;
@@ -167,11 +184,13 @@ function createToonMaterial(shader, directionalLight, directionalAmbientLight) {
   return material;
 }
 
+let currentCameraY = 0;
+
 function updateCameraPosition(scrollY) {
-  const totalCameraMove = 4;
-  const scrollProgress = Math.min(scrollY / (window.innerHeight * 0.8), 1);
-  const newY = -scrollProgress * totalCameraMove;
-  camera.position.y = newY;
+  const moveSpeed = 0.004;
+  const targetY = -scrollY * moveSpeed;
+  currentCameraY += (targetY - currentCameraY) * 0.1; // Easing
+  camera.position.y = currentCameraY;
 }
 
 function isSectionVisible(sectionId) {
@@ -190,14 +209,15 @@ function updateMarchingCubes(time) {
   const effectController = marchingCubesEffect.effectController;
   const numblobs = effectController.numBlobs;
   const subtract = 12;
-  const strength = 1.2 / ((Math.sqrt(numblobs) - 1) / 4 + 1);
+  const strength = effectController.ballSize / ((Math.sqrt(numblobs) - 1) / 4 + 1);
 
   marchingCubesEffect.reset();
 
   for (let i = 0; i < numblobs; i++) {
-    const ballx = Math.sin(i + 1.26 * time * effectController.speed * (1.03 + 0.5 * Math.cos(0.21 * i))) * 0.27 + 0.5;
-    const bally = Math.abs(Math.cos(i + 1.12 * time * effectController.speed * Math.cos(1.22 + 0.1424 * i))) * 0.77;
+    const ballx = Math.sin(i + 1.26 * time * effectController.speed * (1.03 + 0.5 * Math.cos(0.21 * i))) * 0.5 + 0.5;   
+     const bally = Math.abs(Math.cos(i + 1.12 * time * effectController.speed * Math.cos(1.22 + 0.1424 * i))) * 0.67;
     const ballz = Math.cos(i + 1.32 * time * effectController.speed * 0.1 * Math.sin((0.92 + 0.53 * i))) * 0.27 + 0.5;
+
 
     marchingCubesEffect.addBall(ballx, bally, ballz, strength, subtract);
   }
@@ -250,18 +270,16 @@ function handleScroll() {
 
   // Update MarchingCubes position
   if (marchingCubesEffect) {
-    const section = document.getElementById('section4');
+    const section = document.getElementById('section3');
     const rect = section.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
     
     // Calculate the position of the effect
-    const effectY = rect.top - viewportHeight + (viewportHeight * 0.5); // 0.5 centers it vertically
-    
-    // Set the position of the effect
-    marchingCubesEffect.position.y = -effectY * 0.1; // The 0.1 factor slows down the movement
-    
+    const effectY = rect.top - viewportHeight + (viewportHeight * 0.8); // 0.5 centers it vertically
+    // Set the position of the effect with slower movement
+    marchingCubesEffect.position.y = -effectY * marchingCubesScrollSpeed - 3;
     // Show/hide the effect based on section visibility
-    marchingCubesEffect.visible = rect.top < viewportHeight && rect.bottom > 0;
+    // marchingCubesEffect.visible = rect.top < viewportHeight && rect.bottom > 0;
   }
 }
 async function init() {
