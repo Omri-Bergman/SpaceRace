@@ -291,7 +291,7 @@ export const sketch1 = (p) => {
   let textX, textY, textWidth, textHeight, hebrewText;
   p.setup = () => {
     let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-    canvas.parent('p5-sketch-1');
+    canvas.parent('p5-opening');
     p.noStroke();
 
     // Load predefined shapes
@@ -414,7 +414,7 @@ export const sketch2 = (p) => {
 
   p.setup = () => {
     let canvas = p.createCanvas(p.windowWidth, 200);
-    canvas.parent('p5-sketch-2');
+    canvas.parent('p5-tickets');
     p.textSize(32);
     p.textAlign(p.CENTER, p.CENTER);
     p.textFont('narkisBlock');

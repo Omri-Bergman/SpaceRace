@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
 import gsap from 'gsap';
+import { MarchingCubes } from 'three/addons/objects/MarchingCubes.js';
+import { ToonShader1 } from 'three/addons/shaders/ToonShader.js';
+import { BlurScrollEffect as BlurScrollEffect3 } from './effectScroll/effect-3/blurScrollEffect.js';
+import { BlurScrollEffect as BlurScrollEffect4 } from './effectScroll/effect-4/blurScrollEffect.js';
+import { initSmoothScrolling } from './effectScroll/smoothscroll.mjs';
+import { preloadFonts } from './effectScroll/utils.js';
 
 import { initSecondSectionThree } from './secondSectionThree.js';
 import { sketch1, sketch2 } from './p5Sketches.js';
@@ -25,7 +31,7 @@ async function initThreeJS() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  gui = new GUI();
+  // gui = new GUI();
 
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
@@ -135,19 +141,41 @@ async function init() {
   new p5(sketch1, document.getElementById('p5-sketch-1'));
   new p5(sketch2, document.getElementById('p5-sketch-2'));
 
-  const secondSectionFolder = gui.addFolder('Second Section');
-  secondSectionFolder.add(secondSection.params, 'enableRotation').name('Enable Rotation');
-  secondSectionFolder.add(secondSection.params, 'transmission', 0, 1).onChange(secondSection.updateParams);
-  secondSectionFolder.add(secondSection.params, 'thickness', 0, 5).onChange(secondSection.updateParams);
-  secondSectionFolder.add(secondSection.params, 'roughness', 0, 1).onChange(secondSection.updateParams);
-  secondSectionFolder.add(secondSection.params, 'envMapIntensity', 0, 3).onChange(secondSection.updateParams);
-  secondSectionFolder.add(secondSection.params, 'iridescence', 0, 10).onChange(secondSection.updateParams);
-  secondSectionFolder.add(secondSection.params, 'dispersion', 0, 10).onChange(secondSection.updateParams);
+  // const secondSectionFolder = gui.addFolder('Second Section');
+  // secondSectionFolder.add(secondSection.params, 'enableRotation').name('Enable Rotation');
+  // secondSectionFolder.add(secondSection.params, 'transmission', 0, 1).onChange(secondSection.updateParams);
+  // secondSectionFolder.add(secondSection.params, 'thickness', 0, 5).onChange(secondSection.updateParams);
+  // secondSectionFolder.add(secondSection.params, 'roughness', 0, 1).onChange(secondSection.updateParams);
+  // secondSectionFolder.add(secondSection.params, 'envMapIntensity', 0, 3).onChange(secondSection.updateParams);
+  // secondSectionFolder.add(secondSection.params, 'iridescence', 0, 10).onChange(secondSection.updateParams);
+  // secondSectionFolder.add(secondSection.params, 'dispersion', 0, 10).onChange(secondSection.updateParams);
 
 
   // Event listeners
   window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', handleResize);
+
+
+
+
+// Texts
+  initSmoothScrolling();
+  preloadFonts().then(() => {
+      const effects = [
+          { selector: '[data-effect-1]', Effect: BlurScrollEffect4 },
+          { selector: '[data-effect-2]', Effect: BlurScrollEffect3 },
+          { selector: '[data-effect-3]', Effect: BlurScrollEffect4 },
+          { selector: '[data-effect-4]', Effect: BlurScrollEffect3 }
+      ];
+  
+      effects.forEach(({ selector, Effect }) => {
+          const element = document.querySelector(selector);
+          if (element) {
+              new Effect(element);
+          }
+      });
+  });
+
 
   animate();
 }

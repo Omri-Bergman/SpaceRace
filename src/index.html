@@ -1,30 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll-based Interactive Website</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll-based Interactive Website</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <canvas class="webgl"></canvas>
-    
-    <div class="content-wrapper">
-      <section class="section" id="section1">
-        <div class="p5-container" id="p5-sketch-1"></div>
-        <div class="content-overlay"></div>
-      </section>
+  <canvas class="webgl"></canvas>
+  <div id="p5-man-container"></div>
+  <div id="following-text-man" class="time-indicator">00:00 --- 01:30</div>
+  <div id="p5-tatran-container"></div>
+  <div id="following-text-tatran" class="time-indicator">01:30 --- 03:00</div>
 
-      <section class="section" id="section2">
-        <div id="second-section-container"></div>
-      </section>
 
-      <section class="section" id="section4">
-        <div class="p5-container" id="p5-sketch-2"></div>
-      </section>
+  <main class="content-wrapper">
+    <!-- Section 1: Opening -->
+    <section id="section1">
+      <div id="p5-opening" class="p5-container"></div>
+      <div class="content-overlay"></div>
+    </section>
+
+    <!-- Section 2: Second section container (from original main HTML) -->
+    <section id="section2">
+      <div id="second-section-container"></div>
+    </section>
+
+
+
+    <!-- Section 4: Scroll Container -->
+    <section id="section4">
+      <div id="scrollContainer">
+        <!-- Subsection 1 -->
+        <div class="subsection section-extra-space" dir="rtl">
+          <h1>אז מה הולך לקרות?</h1>
+        </div>
+    </section>
+
+    <!-- Section 3: Man and Tatran containers -->
+    <!-- <section id="section3">
+      <div id="p5-man-container"></div>
+      <div id="following-text-man" class="time-indicator">00:00 --- 01:30</div>
+      <div id="p5-tatran-container"></div>
+      <div id="following-text-tatran" class="time-indicator">01:30 --- 03:00</div>
+    </section> -->
+
+    <!-- Subsection 2 -->
+    <div class="subsection section2">
+      <div class="content">
+        <div class="blur-text blur-text--2" data-effect-1="" dir="rtl">
+          <p class="paragraph-with-space headMan">שיחה עם הסופר דרור בורשטיין</p>
+          <p class="paragraph-with-space quote">”החלל הוא כמו תערוכה גדולה במוזיאון הפתוח רק בלילה והכניסה אליו חופשית
+            תמיד, אך המוזיאון כמעט ריק ובתערוכה מעטים בלבד צופים, הגם שכולם ישנים במוזיאון מדי לילה.“</p>
+          <p class="paragraph-with-space middlePMan">כל אחד מפרקי <span class="special-font-word">”אדם בחלל“</span>
+            מתחיל בהתבוננות בשמי הלילה — הירח, שבתאי, צדק, כוכב הצפון או גלקסיות רחוקות — ונמשך בדברים ארציים אשר אור
+            גרמי השמים או חשכת החלל מאירים ומעוררים: ציור של אישה יושבת לאור נר, ציור של אור שמש בחדר ריק, הליכה אל מעל
+            הכוכבים במדרש והמחלוקות ההלכתיות והאסטרונומיות בנוגע לקביעת ראש החודש במשנה.</p>
+          <p><span class="special-font-word">”אדם בחלל“</span> הוא ספר שנכתב בלילות. זהו ספר על הכוכבים מנקודת מבטו של
+            איש ספרות. האדם שבכותרת הספר יכול להיות כל מי שהכוכבים יקרים ללבו, כל איש ואישה שמבקשים לחשוב על מקומם
+            ביקום. דרור בורשטיין החל להתבונן בשמי הלילה לפני שלושים וחמש שנה.</p>
+        </div>
+      </div>
     </div>
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-    <script type="module" src="main.js"></script>
-  </body>
+
+    <!-- Subsection 3 -->
+    <div class="subsection section3">
+      <div class="content">
+        <div class="blur-text blur-text--3" data-effect-2="" dir="rtl">
+          <p class="paragraph-with-space headTatran">מופע השקת אלבום</p>
+          <p class="paragraph-with-space middleP">מה שהתחיל כהופעות חיות מחתרתיות ומדוייקות להפליא, התפשט ברחבי תל אביב
+            מפה לאוזן והחוצה אל העולם, יצר כת אדוקה של קהל מאזינים נאמן, ובסופו של דבר הפך ללהקה הבינלאומית המוערכת שהיא
+            היום. טאטרן נחשבת לפורצת-דרך בסצנת המוזיקה המקומית. הלהקה מביאה סאונד ייחודי שלא נשמע כמותו בארץ קודם לכן,
+            משלבת באלגנטיות את המודל הקלאסי של גיטרה-באס-תופים עם גישה חדשה למוזיקה. </p>
+          <p>בחיפוש מתמיד אחר הרחבת גבולות הכלים, השלושה משתמשים במגוון רחב של אפקטים אלקטרוניים ואקוסטיים ומניפולציות
+            של הצליל. בשילוב עם קומפוזיציות שאפתניות ועיבודים מדוייקים, הם יוצרים חוויה מוזיקלית תזמורתית. המוזיקה מלאת
+            דמיון ורגש, עם השפעות עמוקות של פוסט-רוק, ג׳אז מודרני ומוזיקה קלאסית, מניעה את המאזינים בין היפהפה למטריד.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subsection 4 -->
+    <div class="subsection section4">
+      <div class="content">
+        <div class="blur-text blur-text--4" data-effect-3="" dir="rtl">
+          <!-- <p class="paragraph-with-space">חלל נגטיבי</p> -->
+          <div class="startDance">
+            <p class="paragraph-with-space">לאחר שכבשו את במת ”הרוסטרס“ מגיעים הרקדנים:</p>
+            <p class="paragraph-with-space dancers">י. אזולאי, ע. אשר, ר. באוך וע. כהן</p>
+            <p class="paragraph-with-space "> למופע מחול מיוחד</p>
+          </div>
+          <p class="paragraph-with-space danceFirstP">בהופעתם, יבקשו הרקדנים המוכשרים לחבר את עולם התקשורת החזותית ממנו
+            הם שואבים השראה רבה אל מרחבי החלל. המופע אשר אורך כשעה וחצי יקח את הצופה מרמת המיקרו קוסמוס עד רמת המיקרו
+            טיפוגרפיה, חוויה מעוררת חושים שתצאו ממנה עם פרספקטיבה חדשה על החלל הנגטיבי אשר שוכן בנשמתכם.</p>
+          <p class="paragraph-with-space danceSecondP">אזהרת טריגר: המופע לא חושש לשחוט פרות קדושות ולשבור את הגריד -
+            ממקפים לא רחבים להפרדה בין תאריכים עד לשימוש בפונט חיים כטקסט רץ.</p>
+          <div class="danceLastP">
+            <p class="paragraph-with-space danceLastPSpace boldNarkis">מן הביקורות:</p>
+            <p class="paragraph-with-space danceLastPSpace">״הקונספט של המופע עובד, אך רואים כי רמת ההפקה נעשתה בלחץ של
+              שבוע הגשות. ★★★״</p>
+            <p class="paragraph-with-space danceLastPSpace">״ישנתי כל ההופעה היה מדהים ★★★★★״</p>
+            <p>״פונט אריאל גרסת ההופעה ★״</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subsection 5 -->
+    <div class="subsection section5">
+      <div class="content">
+        <div class="blur-text blur-text--5" data-effect-4="" dir="rtl">
+          <p class="paragraph-with-space Omri">השקת חוברת!!!! איזה כיף?</p>
+          <div class="omriFirst">
+            <p class="paragraph-with-space omriP">טוב, זה פאדיחות, ממש לא תכננו לארח אותו, אבל הוא מימן והמציא את האירוע
+              והוא זה שגם כותב את הטקסט הזה ברגע זה, אז לא נעים.</p>
+            <p class="paragraph-with-space omriP">תעשו את עצמכם מקשיבים, אבל אתם ממש יכולים להיות בטלפון תוך כדי הכל
+              טוב.</p>
+          </div>
+          <p>
+            הוא ידבר על משהו עם חוברת? מרוץ חלל? היה טיפוגרפיה נראה לנו? היו אמורים להיות דימויים בחוברת והוא משום מה
+            החליט שלא? החלטה משונה אם תשאלו אותנו. </p>
+          <p>אבל בסדר, אולי תהנו אנאערף</p>
+          <p>הבחור חמוד בסה״כ</p>
+        </div>
+      </div>
+    </div>
+    </div>
+
+
+    <!-- Section 5: Tickets -->
+    <section id="section5">
+      <div id="p5-tickets" class="p5-container"></div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+  <script type="module" src="main.js"></script>
+  <script src="sketches.js"></script>
+</body>
+
 </html>
