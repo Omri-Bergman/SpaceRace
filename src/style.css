@@ -94,6 +94,11 @@ section, .section, .section2, .section3, .section4, .section5 {
 .section4 { padding-top: 20%; padding-left: 1%; }
 .section5 { padding-right: 47%; }
 
+#section4 {
+    margin-top: 100vh; /* Adjust this value as needed */
+    margin-bottom: 50vh; /* Adjust this value as needed */
+}
+
 section:nth-child(odd) {
     justify-content: flex-end;
 }
@@ -118,7 +123,7 @@ section:nth-child(odd) {
 }
 
 :root {
-    --base-container-top: 3400px;
+    --base-container-top: 3650px;
     --container-spacing: 1600px;
     --text-offset-top: 440px;  /* Vertical distance from container to text */
     --text-offset-left: 0px;  /* Horizontal distance from container to text */
@@ -299,7 +304,7 @@ section:nth-child(odd) {
 .startDance {
     font-family: var(--font-David);
     font-weight: 500;
-    margin-right: 2em;
+    /* margin-right: 2em; */
     margin-bottom: 0.3em;
     font-size: 30px;
     line-height: 1;
@@ -312,6 +317,11 @@ section:nth-child(odd) {
 }
 
 .danceFirstP, .danceSecondP {
+    margin-bottom: var(--spacing-medium);
+}
+
+.danceFirstP {
+    margin-right: 2em;
     margin-bottom: var(--spacing-medium);
 }
 
