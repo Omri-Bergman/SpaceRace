@@ -23,7 +23,7 @@ const marchingCubesScrollSpeed = 0.02; // Adjust this value to change the speed
 // Initialize stats
 const stats = new Stats();
 stats.showPanel(0);
-document.body.appendChild(stats.dom);
+// document.body.appendChild(stats.dom);
 
 
 async function initThreeJS() {
