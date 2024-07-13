@@ -63,7 +63,7 @@ body {
     top: 0; 
     left: 0;
     width: 100%;
-    padding-bottom: 100vh;
+    padding-bottom: 50vh;
 }
 
 /* Section styles */
@@ -98,7 +98,7 @@ section, .section, .section2, .section3, .section4, .section5 {
 .section2 { padding-left: 23%; }
 .section3 { padding-top: 30%; padding-right: 47%; }
 .section4 { padding-top: 20%; padding-left: 0%; padding-bottom: 30%; }
-.section5 { padding-right: 47%; }
+.section5 { padding-right: 47%; margin-bottom: 0;}
 
 #section4 {
     margin-top: 100vh; /* Adjust this value as needed */
@@ -388,6 +388,25 @@ section:nth-child(odd) {
 .blur-text--5 .omri-paragraph {
     display: block !important;
     margin-bottom: 0.10em !important;
+}
+
+.banner-text {
+    font-family: var(--font-David);
+    font-weight: 700;
+    font-size: var( --font-size-base);
+    margin-right: 2.10em;
+}
+
+.banner-container {
+    width: 100%;
+    overflow: hidden;
+    margin-top: auto; /* This pushes the banner to the bottom */
+}
+
+.banner-image {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Font face declarations */
