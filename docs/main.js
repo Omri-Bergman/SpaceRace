@@ -110,10 +110,10 @@ function setupGui() {
 
   const effectController = {
     speed: 0.15,
-    numBlobs: 34,
+    numBlobs: 36,
     resolution: 14,
     isolation: 488,
-    ballSize: 2.8
+    ballSize: 2.4
   };
 
   marchingCubesFolder.add(effectController, 'speed', 0.1, 8.0, 0.05).onChange(updateMarchingCubes);
@@ -154,7 +154,7 @@ function initMarchingCubes() {
   const rect = section.getBoundingClientRect();
   
   marchingCubesEffect.position.set(0, 0, -6);
-    marchingCubesEffect.scale.set(10, 10,7);
+    marchingCubesEffect.scale.set(12, 12,7);
   marchingCubesEffect.enableUvs = false;
   marchingCubesEffect.enableColors = false;
   marchingCubesEffect.renderOrder = 0;
@@ -216,9 +216,11 @@ function updateMarchingCubes(time) {
 
   for (let i = 0; i < numblobs; i++) {
     const ballx = Math.sin(i + 1.26 * time * effectController.speed * (1.03 + 0.5 * Math.cos(0.21 * i))) * 0.5 + 0.5;   
-     const bally = Math.abs(Math.cos(i + 1.12 * time * effectController.speed * Math.cos(1.22 + 0.1424 * i))) * 0.67;
+    
+    // Modified bally calculation
+    const rawBally = Math.abs(Math.cos(i + 1.12 * time * effectController.speed * Math.cos(1.22 + 0.1424 * i)));
+    const bally = 0.15 + (rawBally * 0.7); // This keeps bally between 0.15 and 0.85    
     const ballz = Math.cos(i + 1.32 * time * effectController.speed * 0.1 * Math.sin((0.92 + 0.53 * i))) * 0.27 + 0.5;
-
 
     marchingCubesEffect.addBall(ballx, bally, ballz, strength, subtract);
   }
