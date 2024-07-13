@@ -87,6 +87,22 @@ class PredefinedShape {
         }
   }
 
+  calculateSignedArea(points) {
+    let area = 0;
+    for (let i = 0; i < points.length; i++) {
+      let j = (i + 1) % points.length;
+      area += points[i].x * points[j].y - points[j].x * points[i].y;
+    }
+    return area / 2;
+  }
+
+  correctWindingOrder(points) {
+    if (this.calculateSignedArea(points) < 0) {
+      return points.reverse();
+    }
+    return points;
+  }
+
   isOffScreen(canvasWidth, canvasHeight, globalScale, offsetX, offsetY) {
     let minSizeThreshold = 0.1; // Adjust this value as needed
  
@@ -213,7 +229,9 @@ class PredefinedShape {
     let rotation1 = this.p.random(-maxRotation, maxRotation);
     let rotation2 = this.p.random(-maxRotation, maxRotation);
   
-    // Create new shapes with increased generation and inherited scale factor
+    shape1Points = this.correctWindingOrder(shape1Points);
+    shape2Points = this.correctWindingOrder(shape2Points);
+  
     return [
       new PredefinedShape(this.p, shape1Points, this.rotation + rotation1, this.generation + 1, this.scaleFactor),
       new PredefinedShape(this.p, shape2Points, this.rotation + rotation2, this.generation + 1, this.scaleFactor)
@@ -415,22 +433,53 @@ export const sketch2 = (p) => {
   let currentTextColor;
 
   const createNewQuad = () => {
-    // Calculate the minimum size needed to contain the text
-    let minSize = Math.max(textWidth, textHeight) * textScale * 1.4; // Add 20% padding
-    let maxSize = minSize * 1.5; // Allow some variability, but not too much
-    console.log("min: ", minSize, " max: ", maxSize)
+    let newQuad;
+    let attempts = 0;
+    const maxAttempts = 100; // Prevent infinite loop
+  
+    do {
+      // Calculate the minimum size needed to contain the text
+      let minSize = Math.max(textWidth, textHeight) * textScale * 1.4; // Add 40% padding
+      let maxSize = minSize * 1.5; // Allow some variability, but not too much
+  
+      // Generate the shape
+      newQuad = new Quadrilateral(p, textX, p.height - textY, minSize, maxSize);
+  
+      // Adjust the shape's position to keep it centered on the text
+      let shapeBounds = newQuad.getBounds();
+      let shapeWidth = shapeBounds.maxX - shapeBounds.minX;
+      let shapeHeight = shapeBounds.maxY - shapeBounds.minY;
+      let dx = textX - (shapeBounds.minX + shapeWidth / 2);
+      let dy = (p.height - textY) - (shapeBounds.minY + shapeHeight / 2);
+      newQuad.translate(dx, dy);
+  
+      // Recalculate bounds after translation
+      shapeBounds = newQuad.getBounds();
+  
+      // Calculate text bounds
+      let textBounds = {
+        minX: textX - (textWidth * textScale) / 2,
+        maxX: textX + (textWidth * textScale) / 2,
+        minY: p.height - textY - (textHeight * textScale) / 2,
+        maxY: p.height - textY + (textHeight * textScale) / 2
+      };
+  
+      attempts++;
+      console.log("attampts: ",attempts)
 
-    // Generate the shape
-    let newQuad = new Quadrilateral(p, textX, p.height - textY, minSize, maxSize);
-
-    // Adjust the shape's position to keep it centered on the text
-    let shapeBounds = newQuad.getBounds();
-    let shapeWidth = shapeBounds.maxX - shapeBounds.minX;
-    let shapeHeight = shapeBounds.maxY - shapeBounds.minY;
-    let dx = textX - (shapeBounds.minX + shapeWidth / 2);
-    let dy = (p.height - textY) - (shapeBounds.minY + shapeHeight / 2);
-    newQuad.translate(dx, dy);
-
+      // Check if the shape fully contains the text and break the loop if it does
+      if (shapeBounds.minX <= textBounds.minX &&
+          shapeBounds.maxX >= textBounds.maxX &&
+          shapeBounds.minY <= textBounds.minY &&
+          shapeBounds.maxY >= textBounds.maxY) {
+        break;
+      }
+  
+    } while (attempts < maxAttempts);
+  
+    if (attempts >= maxAttempts) {
+      console.warn("Could not generate a suitable quad after " + maxAttempts + " attempts.");
+    }
     return newQuad;
   };
 

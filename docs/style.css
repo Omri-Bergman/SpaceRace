@@ -330,7 +330,7 @@ section:nth-child(odd) {
 .quote {
     font-family: var(--font-David);
     font-weight: normal;
-    line-height: 1.5;
+    line-height: 1.2;
     font-size: var(--font-size-base);
     margin-bottom: var(--spacing-medium);
 }

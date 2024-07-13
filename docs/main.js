@@ -236,7 +236,7 @@ function animate() {
 
   // Animate particles
   particles[0].rotation.y = elapsedTime * 0.02;
-  particles[1].rotation.y = elapsedTime * -0.03; 
+  particles[1].rotation.y = elapsedTime * 0.03; 
   particles[2].rotation.y = elapsedTime * 0.01; 
 
   // Update camera position based on scroll
@@ -364,44 +364,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const html = document.documentElement;
 
+  // Define an array of RGB colors for the gradient
+  const colors = [
+      { r: 0, g: 0, b: 0 },       // Black
+      { r: 15, g: 15, b: 55 },    // Dark Blue
+      { r: 45, g: 45, b: 150 },   // Dark Purple
+      { r: 30, g: 30, b: 110 },   // Deep Blue
+      { r:160, g:26, b:125 },   // Indigo
+      { r: 225, g: 180, b: 255 }, // Soft Pink
+      { r:242, g:130, b:102 }  // Orangish Sky
+  ];
+
   window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
       const scrollPercentage = scrollTop / scrollHeight;
 
       let r, g, b;
+      let startColor, endColor, subPercentage;
 
       if (scrollPercentage < 0.5) {
-          // Black to Deep Navy (50% of scroll)
-          const subPercentage = scrollPercentage / 0.5;
-          r = Math.round(subPercentage * 10);
-          g = Math.round(subPercentage * 15);
-          b = Math.round(subPercentage * 30);
+          // Black to Dark Blue (50% of scroll)
+          subPercentage = scrollPercentage / 0.8;
+          startColor = colors[0];
+          endColor = colors[1];
       } else if (scrollPercentage < 0.8) {
-          // Deep Navy to Midnight Blue (30% of scroll)
-          const subPercentage = (scrollPercentage - 0.5) / 0.3;
-          r = Math.round(10 + subPercentage * 15);
-          g = Math.round(15 + subPercentage * 20);
-          b = Math.round(30 + subPercentage * 25);
+          // Dark Blue to Deep Blue (30% of scroll)
+          subPercentage = (scrollPercentage - 0.5) / 0.3;
+          startColor = colors[1];
+          endColor = colors[2];
       } else if (scrollPercentage < 0.92) {
-          // Midnight Blue to Twilight Purple (12% of scroll)
-          const subPercentage = (scrollPercentage - 0.8) / 0.12;
-          r = Math.round(25 + subPercentage * 50);
-          g = Math.round(35 + subPercentage * 45);
-          b = Math.round(55 + subPercentage * 55);
-      } else if (scrollPercentage < 0.98) {
-          // Twilight Purple to Pale Blue (6% of scroll)
-          const subPercentage = (scrollPercentage - 0.92) / 0.06;
-          r = Math.round(75 + subPercentage * 75);
-          g = Math.round(80 + subPercentage * 90);
-          b = Math.round(110 + subPercentage * 90);
+          // Deep Blue to Dark Purple (12% of scroll)
+          subPercentage = (scrollPercentage - 0.8) / 0.12;
+          startColor = colors[2];
+          endColor = colors[4];
       } else {
-          // Pale Blue to Dawn Sky (2% of scroll)
-          const subPercentage = (scrollPercentage - 0.98) / 0.02;
-          r = Math.round(150 + subPercentage * 35);
-          g = Math.round(170 + subPercentage * 35);
-          b = Math.round(200 + subPercentage * 30);
+          // Dark Purple to Orangish Sky (6% of scroll)
+          subPercentage = (scrollPercentage - 0.92) / 0.08;
+          startColor = colors[4];
+          endColor = colors[6];
       }
+
+      // Interpolate between startColor and endColor
+      r = Math.round(startColor.r + subPercentage * (endColor.r - startColor.r));
+      g = Math.round(startColor.g + subPercentage * (endColor.g - startColor.g));
+      b = Math.round(startColor.b + subPercentage * (endColor.b - startColor.b));
 
       // Set the background color
       document.documentElement.style.setProperty('--color-background-dynamic', `rgb(${r}, ${g}, ${b})`);
