@@ -356,50 +356,50 @@ document.addEventListener('DOMContentLoaded', init);
 // You might want to call cleanup() when the user navigates away from the page
 // or when you want to reset everything
 // window.addEventListener('beforeunload', cleanup);
-document.addEventListener('DOMContentLoaded', () => {
-  const body = document.body;
-  const html = document.documentElement;
+// document.addEventListener('DOMContentLoaded', () => {
+//   const body = document.body;
+//   const html = document.documentElement;
 
-  window.addEventListener('scroll', () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
-      const scrollPercentage = scrollTop / scrollHeight;
+//   window.addEventListener('scroll', () => {
+//       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+//       const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
+//       const scrollPercentage = scrollTop / scrollHeight;
 
-      let r, g, b;
+//       let r, g, b;
 
-      if (scrollPercentage < 0.5) {
-          // Black to Deep Navy (50% of scroll)
-          const subPercentage = scrollPercentage / 0.5;
-          r = Math.round(subPercentage * 10);
-          g = Math.round(subPercentage * 15);
-          b = Math.round(subPercentage * 30);
-      } else if (scrollPercentage < 0.8) {
-          // Deep Navy to Midnight Blue (30% of scroll)
-          const subPercentage = (scrollPercentage - 0.5) / 0.3;
-          r = Math.round(10 + subPercentage * 15);
-          g = Math.round(15 + subPercentage * 20);
-          b = Math.round(30 + subPercentage * 25);
-      } else if (scrollPercentage < 0.92) {
-          // Midnight Blue to Twilight Purple (12% of scroll)
-          const subPercentage = (scrollPercentage - 0.8) / 0.12;
-          r = Math.round(25 + subPercentage * 50);
-          g = Math.round(35 + subPercentage * 45);
-          b = Math.round(55 + subPercentage * 55);
-      } else if (scrollPercentage < 0.98) {
-          // Twilight Purple to Pale Blue (6% of scroll)
-          const subPercentage = (scrollPercentage - 0.92) / 0.06;
-          r = Math.round(75 + subPercentage * 75);
-          g = Math.round(80 + subPercentage * 90);
-          b = Math.round(110 + subPercentage * 90);
-      } else {
-          // Pale Blue to Dawn Sky (2% of scroll)
-          const subPercentage = (scrollPercentage - 0.98) / 0.02;
-          r = Math.round(150 + subPercentage * 35);
-          g = Math.round(170 + subPercentage * 35);
-          b = Math.round(200 + subPercentage * 30);
-      }
+//       if (scrollPercentage < 0.5) {
+//           // Black to Deep Navy (50% of scroll)
+//           const subPercentage = scrollPercentage / 0.5;
+//           r = Math.round(subPercentage * 10);
+//           g = Math.round(subPercentage * 15);
+//           b = Math.round(subPercentage * 30);
+//       } else if (scrollPercentage < 0.8) {
+//           // Deep Navy to Midnight Blue (30% of scroll)
+//           const subPercentage = (scrollPercentage - 0.5) / 0.3;
+//           r = Math.round(10 + subPercentage * 15);
+//           g = Math.round(15 + subPercentage * 20);
+//           b = Math.round(30 + subPercentage * 25);
+//       } else if (scrollPercentage < 0.92) {
+//           // Midnight Blue to Twilight Purple (12% of scroll)
+//           const subPercentage = (scrollPercentage - 0.8) / 0.12;
+//           r = Math.round(25 + subPercentage * 50);
+//           g = Math.round(35 + subPercentage * 45);
+//           b = Math.round(55 + subPercentage * 55);
+//       } else if (scrollPercentage < 0.98) {
+//           // Twilight Purple to Pale Blue (6% of scroll)
+//           const subPercentage = (scrollPercentage - 0.92) / 0.06;
+//           r = Math.round(75 + subPercentage * 75);
+//           g = Math.round(80 + subPercentage * 90);
+//           b = Math.round(110 + subPercentage * 90);
+//       } else {
+//           // Pale Blue to Dawn Sky (2% of scroll)
+//           const subPercentage = (scrollPercentage - 0.98) / 0.02;
+//           r = Math.round(150 + subPercentage * 35);
+//           g = Math.round(170 + subPercentage * 35);
+//           b = Math.round(200 + subPercentage * 30);
+//       }
 
-      // Set the background color
-      document.documentElement.style.setProperty('--color-background-dynamic', `rgb(${r}, ${g}, ${b})`);
-  });
-});
+//       // Set the background color
+//       document.documentElement.style.setProperty('--color-background-dynamic', `rgb(${r}, ${g}, ${b})`);
+//   });
+// });
