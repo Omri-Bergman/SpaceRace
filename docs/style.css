@@ -393,49 +393,49 @@ section:nth-child(odd) {
 /* Font face declarations */
 @font-face {
     font-family: 'VC David';
-    src: url('fonts/VC_david-Light.otf') format('opentype');
+    src: url('/fonts/VC_david-Light.otf') format('opentype');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'VC David';
-    src: url('fonts/VC_david-Medium.otf') format('opentype');
+    src: url('/fonts/VC_david-Medium.otf') format('opentype');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'VC David';
-    src: url('fonts/VC_david-Bold.otf') format('opentype');
+    src: url('/fonts/VC_david-Bold.otf') format('opentype');
     font-weight: 700;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'NarkisBlock';
-    src: url('fonts/NarkissBlock-Regular.otf') format('opentype');
+    src: url('/fonts/NarkissBlock-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'NarkisBlock';
-    src: url('fonts/NarkissBlock-Bold.otf') format('opentype');
+    src: url('/fonts/NarkissBlock-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Frankruel';
-    src: url('fonts/VC_Frankruel-Bold.otf') format('opentype');
+    src: url('/fonts/VC_Frankruel-Bold.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'NarkisRutti';
-    src: url('fonts/NarkisRuttiExtraLight-Regular.otf') format('opentype');
+    src: url('/fonts/NarkisRuttiExtraLight-Regular.otf') format('opentype');
     font-weight: 200;
     font-style: normal;
 }
@@ -449,7 +449,7 @@ section:nth-child(odd) {
 
 @font-face {
     font-family: 'NarkisRutti';
-    src: url('fonts/NarkisRuttiBlack-Regular.otf') format('opentype');
+    src: url('/fonts/NarkisRuttiBlack-Regular.otf') format('opentype');
     font-weight: 900;
     font-style: normal;
 }

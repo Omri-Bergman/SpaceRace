@@ -416,7 +416,7 @@ export const sketch2 = (p) => {
 
   const createNewQuad = () => {
     // Calculate the minimum size needed to contain the text
-    let minSize = Math.max(textWidth, textHeight) * textScale * 1.2; // Add 20% padding
+    let minSize = Math.max(textWidth, textHeight) * textScale * 1.4; // Add 20% padding
     let maxSize = minSize * 1.5; // Allow some variability, but not too much
     console.log("min: ", minSize, " max: ", maxSize)
 
