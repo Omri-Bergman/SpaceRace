@@ -400,86 +400,203 @@ for (let shape of predefinedShapes) {
 
 // ... (sketch2 remains the same)
 export const sketch2 = (p) => {
-  let textX, textY, textWidth, textHeight, hebrewText;
-  let ellipseWidth, ellipseHeight;
-  let rectRotation = 0;
-  let targetRotation = 0;
+  let textX, textY, hebrewText;
+  let currentShape, targetShape;
   let isMouseOver = false;
+  let wasMouseOver = false;
+  let textRotation = 0;
+  let textScale = 0.8;
+  let textWidth, textHeight;
+  let animationProgress = 1; // 0 to 1
+  let animationDuration = 30; // frames
 
-  // Define colors
-  const normalColor = p.color(200, 200, 200);
-  const hoverColor = p.color(0, 0, 255); // Deep blue
-  let currentEllipseColor;
+  const normalColor = p.color(250);
+  let currentShapeColor;
   let currentTextColor;
+
+  const createNewQuad = () => {
+    // Calculate the minimum size needed to contain the text
+    let minSize = Math.max(textWidth, textHeight) * textScale * 1.2; // Add 20% padding
+    let maxSize = minSize * 1.5; // Allow some variability, but not too much
+    console.log("min: ", minSize, " max: ", maxSize)
+
+    // Generate the shape
+    let newQuad = new Quadrilateral(p, textX, p.height - textY, minSize, maxSize);
+
+    // Adjust the shape's position to keep it centered on the text
+    let shapeBounds = newQuad.getBounds();
+    let shapeWidth = shapeBounds.maxX - shapeBounds.minX;
+    let shapeHeight = shapeBounds.maxY - shapeBounds.minY;
+    let dx = textX - (shapeBounds.minX + shapeWidth / 2);
+    let dy = (p.height - textY) - (shapeBounds.minY + shapeHeight / 2);
+    newQuad.translate(dx, dy);
+
+    return newQuad;
+  };
+
+  const startMorphAnimation = () => {
+    targetShape = createNewQuad();
+    animationProgress = 0;
+  };
 
   p.setup = () => {
     let canvas = p.createCanvas(p.windowWidth, 200);
     canvas.parent('p5-tickets');
-    p.textSize(32);
-    p.textAlign(p.CENTER, p.CENTER);
     p.textFont('narkisBlock');
+    p.textStyle(p.BOLD);
 
-    // Calculate text position and dimensions
     hebrewText = "כרטיסים";
-    textX = 50;
-    textY = 90;
+    textX = 100;
+    textY = 100;
+
+    // Calculate text dimensions
+    p.textSize(32); // Set a base size for measurement
     textWidth = p.textWidth(hebrewText);
     textHeight = p.textAscent() + p.textDescent();
 
-    // Calculate ellipse dimensions (make it slightly larger than the text)
-    ellipseWidth = textHeight + 20;  // Add some padding
-    ellipseHeight = textWidth + 40;  // Add some padding
+    currentShape = createNewQuad();
+    targetShape = currentShape;
 
-    // Initialize colors
-    currentEllipseColor = normalColor;
-    currentTextColor = p.color(0); // Black
+    currentShapeColor = normalColor;
+    currentTextColor = p.color(0,0,255);
   };
 
   p.draw = () => {
     p.clear();
   
-    // Check if mouse is over ellipse
-    let d = p.dist(p.mouseX, p.mouseY, textX, p.height - textY);
-    isMouseOver = d < ellipseWidth/2;
+    isMouseOver = currentShape.contains(p.mouseX, p.mouseY);
 
-    if (isMouseOver) {
-      targetRotation = p.PI/4;
-    } else {
-      targetRotation = 0;
+    if (isMouseOver && !wasMouseOver) {
+      startMorphAnimation();
     }
 
-    // Smoothly interpolate the rotation
-    rectRotation = p.lerp(rectRotation, targetRotation, 0.1);
+    wasMouseOver = isMouseOver;
 
-    // Smoothly interpolate the colors
-    currentEllipseColor = p.lerpColor(currentEllipseColor, isMouseOver ? hoverColor : normalColor, 0.1);
-    currentTextColor = p.lerpColor(currentTextColor, isMouseOver ? p.color(255) : p.color(0), 0.1);
-  
-    // Draw ellipse
+    // Update animation
+    if (animationProgress < 1) {
+      animationProgress += 1 / animationDuration;
+      if (animationProgress > 1) animationProgress = 1;
+    }
+
+    // Interpolate between current and target shape
+    let interpolatedShape = interpolateShapes(currentShape, targetShape, animationProgress);
+
     p.push();
-    p.translate(textX+3, p.height - textY);
-    p.fill(currentEllipseColor);
+    p.fill(currentShapeColor);
     p.noStroke();
-    p.ellipse(0, 0, ellipseWidth, ellipseHeight);
-    
-    // Draw rotating rectangle
-    p.push();
-    p.fill(currentTextColor); // Use the same color as the text
-    p.translate(0, -ellipseHeight/2 + 12);
-    p.rotate(rectRotation);
-    p.rectMode(p.CENTER);
-    p.rect(0, 0, 8, 8);
-    p.pop();
-    
+    interpolatedShape.draw();
     p.pop();
 
-    // Draw main text
+    p.push();
     p.fill(currentTextColor);
     p.noStroke();
-    p.push();
     p.translate(textX, p.height - textY);
-    p.rotate(-p.PI/2);
+    p.rotate(textRotation);
+    p.scale(textScale);
+    p.textAlign(p.CENTER, p.CENTER);
     p.text(hebrewText, 0, 0);
     p.pop();
+
+    // If animation is complete, update current shape
+    if (animationProgress === 1) {
+      currentShape = targetShape;
+    }
+  };
+
+  const interpolateShapes = (shape1, shape2, t) => {
+    return new Quadrilateral(
+      p,
+      shape1.centerX,
+      shape1.centerY,
+      0,
+      0,
+      shape1.vertices.map((v, i) => ({
+        x: p.lerp(v.x, shape2.vertices[i].x, t),
+        y: p.lerp(v.y, shape2.vertices[i].y, t)
+      }))
+    );
   };
 };
+
+class Quadrilateral {
+  constructor(p, centerX, centerY, minSize, maxSize, vertices = null) {
+    this.p = p;
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.vertices = vertices || this.generateVertices(minSize, maxSize);
+  }
+
+
+
+  generateVertices(minSize, maxSize) {
+    // Generate four random points in clockwise order
+    let angles = [
+      this.p.random(0, this.p.PI/2),
+      this.p.random(this.p.PI/2, this.p.PI),
+      this.p.random(this.p.PI, 3*this.p.PI/2),
+      this.p.random(3*this.p.PI/2, 2*this.p.PI)
+    ];
+    
+    return angles.map(angle => {
+      let r = this.p.random(minSize/2, maxSize/2);
+      let x = this.centerX + r * this.p.cos(angle);
+      let y = this.centerY + r * this.p.sin(angle);
+      return {x, y};
+    });
+  }
+
+  draw() {
+    this.p.beginShape();
+    for (let v of this.vertices) {
+      this.p.vertex(v.x, v.y);
+    }
+    this.p.endShape(this.p.CLOSE);
+  }
+
+  contains(x, y) {
+    // Check if a point is inside the quadrilateral using ray-casting algorithm
+    let inside = false;
+    for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
+      let xi = this.vertices[i].x, yi = this.vertices[i].y;
+      let xj = this.vertices[j].x, yj = this.vertices[j].y;
+      
+      let intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+  getLongestDiagonal() {
+    let diagonals = [
+      [this.vertices[0], this.vertices[2]],
+      [this.vertices[1], this.vertices[3]]
+    ];
+    
+    let longestDiagonal = diagonals.reduce((longest, current) => {
+      let currentLength = this.p.dist(current[0].x, current[0].y, current[1].x, current[1].y);
+      let longestLength = this.p.dist(longest[0].x, longest[0].y, longest[1].x, longest[1].y);
+      return currentLength > longestLength ? current : longest;
+    });
+
+    let angle = Math.atan2(longestDiagonal[1].y - longestDiagonal[0].y, 
+                           longestDiagonal[1].x - longestDiagonal[0].x);
+    
+    return [longestDiagonal, angle];
+  }
+
+  getBounds() {
+    let minX = Math.min(...this.vertices.map(v => v.x));
+    let maxX = Math.max(...this.vertices.map(v => v.x));
+    let minY = Math.min(...this.vertices.map(v => v.y));
+    let maxY = Math.max(...this.vertices.map(v => v.y));
+    return { minX, maxX, minY, maxY };
+  }
+
+  translate(dx, dy) {
+    this.vertices = this.vertices.map(v => ({
+      x: v.x + dx,
+      y: v.y + dy
+    }));
+  }
+
+}
