@@ -38,22 +38,37 @@ export class BlurScrollEffect {
   // Animates text based on the scroll position.
   scroll() {
     const words = this.splitter.getWords();
-    console.log(words)
-    gsap.fromTo(words, {
-      scaleY: 0.01,
+    // gsap.fromTo(words, {
+    //   scaleY: 0.01,
+    //   scaleX: 1.8,
+    //   filter: 'blur(10px) brightness(50%)',
+    //   willChange: 'filter, transform'
+    // }, {
+    //     ease: 'none', 
+    //     scaleY: 1,
+    //     scaleX: 1,
+    //     filter: 'blur(0px) brightness(100%)',
+    //     stagger: 0.02, 
+    //     scrollTrigger: {
+      gsap.fromTo(words, {
+        scaleY: 0.01,
       scaleX: 1.8,
-      filter: 'blur(10px) brightness(50%)',
-      willChange: 'filter, transform'
-    }, {
+        opacity: 0,
+        // scale: 0.8,
+        filter: 'blur(10px) brightness(70%)',
+        willChange: 'filter, transform'
+      }, {
         ease: 'none', 
-        scaleY: 1,
-        scaleX: 1,
-        filter: 'blur(0px) brightness(100%)',
-        stagger: 0.02, 
+        opacity: 1,
+        scale: 1,
+        filter: 'blur(0px)  brightness(100%)',
+        stagger: 0.03, 
         scrollTrigger: {
           trigger: this.textElement,
           start: 'top bottom-=27%', 
           end: 'bottom center+=28%',
+          scrub: 0.5, 
+
           // markers: true, // Uncomment this line for debugging
 
           scrub: true, 

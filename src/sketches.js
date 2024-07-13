@@ -96,16 +96,35 @@ function createSketch(config) {
 const manConfig = {
     imagePath: 'man.png',
     canvasSize: {
-        width: window.innerHeight * 0.8,
-        height: window.innerHeight * 0.8
+        width: window.innerHeight * 0.9,
+        height: window.innerHeight * 0.9
     },
     mainFunction: `
-    void main() {
+    // void main() {
+    //     vec2 st = vTexCoord;
+    //     vec2 posMouse = mx;
+        
+    //     float circleSize = 0.08;
+    //     float circleEdge = 0.12;
+        
+    //     float textMask = texture2D(u_texture, st).r;
+
+    //     float sdfCircle = fill(
+    //         sdCircle(st, posMouse),
+    //         circleSize,
+    //         circleEdge
+    //     );
+    //     float textStroke = stroke(textMask, 0.42, 0.2, sdfCircle*0.7) * 4.0;
+    //     gl_FragColor = vec4(vec3(textStroke, textStroke * 0.8, textStroke * 0.9), textStroke);
+    // }
+
+
+        void main() {
         vec2 st = vTexCoord;
         vec2 posMouse = mx;
         
-        float circleSize = 0.08;
-        float circleEdge = 0.12;
+     float circleSize = 0.03;
+        float circleEdge = 0.18;
         
         float textMask = texture2D(u_texture, st).r;
 
@@ -114,8 +133,9 @@ const manConfig = {
             circleSize,
             circleEdge
         );
-        float textStroke = stroke(textMask, 0.42, 0.2, sdfCircle*0.7) * 4.0;
-        gl_FragColor = vec4(vec3(textStroke, textStroke * 0.8, textStroke * 0.9), textStroke);
+        // float textStroke = stroke(textMask, 0.42, 0.2, sdfCircle*0.7)* 8.0;
+        float textStroke = stroke(textMask,0.58, 0.05, sdfCircle) * 8.0;
+        gl_FragColor = vec4(vec3(textStroke, textStroke * 0.6, textStroke * 0.9), textStroke);
     }
     `
 };
@@ -128,14 +148,12 @@ const tatranConfig = {
         height: window.innerHeight
     },
     mainFunction: `
-    void main() {
+        void main() {
         vec2 st = vTexCoord;
         vec2 posMouse = mx;
         
-        // float circleSize = 0.3;
-        // float circleEdge = 0.5;
-                float circleSize = 0.08;
-        float circleEdge = 0.12;
+     float circleSize = 0.03;
+        float circleEdge = 0.18;
         
         float textMask = texture2D(u_texture, st).r;
 
@@ -144,9 +162,9 @@ const tatranConfig = {
             circleSize,
             circleEdge
         );
-        
-        float textStroke = stroke(textMask, 0.4, 0.1, sdfCircle*0.6) * 9.0;
-        gl_FragColor = vec4(vec3(textStroke), textStroke);
+        // float textStroke = stroke(textMask, 0.42, 0.2, sdfCircle*0.7)* 8.0;
+        float textStroke = stroke(textMask,0.6, 0.08, sdfCircle) * 6.0;
+        gl_FragColor = vec4(vec3(textStroke * 0.6, textStroke, textStroke * 0.9), textStroke);
     }
     `
 
@@ -171,9 +189,65 @@ const tatranConfig = {
     // `
 };
 
+const negativeConfig = {
+    imagePath: 'negative.png',  // Replace with your actual image path
+    canvasSize: {
+        width: window.innerHeight * 0.9,
+        height: window.innerHeight * 0.9
+    },
+    mainFunction: `
+        void main() {
+            vec2 st = vTexCoord;
+            vec2 posMouse = mx;
+            
+            float circleSize = 0.03;
+            float circleEdge = 0.18;
+            
+            float textMask = texture2D(u_texture, st).r;
+
+            float sdfCircle = fill(
+                sdCircle(st, posMouse),
+                circleSize,
+                circleEdge
+            );
+            float textStroke = stroke(textMask, 0.6, 0.08, sdfCircle) * 6.0;
+            gl_FragColor = vec4(vec3(textStroke , textStroke* 0.9 , textStroke* 0.6), textStroke);
+        }
+    `
+};
+
+const omriConfig = {
+    imagePath: 'omri.png',  // Replace with your actual image path
+    canvasSize: {
+        width: window.innerHeight * 0.9,
+        height: window.innerHeight * 0.9
+    },
+    mainFunction: `
+        void main() {
+            vec2 st = vTexCoord;
+            vec2 posMouse = mx;
+            
+            float circleSize = 0.03;
+            float circleEdge = 0.18;
+            
+            float textMask = texture2D(u_texture, st).r;
+
+            float sdfCircle = fill(
+                sdCircle(st, posMouse),
+                circleSize,
+                circleEdge
+            );
+            float textStroke = stroke(textMask, 0.55, 0.08, sdfCircle) * 10.0;
+            gl_FragColor = vec4(vec3(textStroke*0.4 , textStroke*0.3 , textStroke* 0.9), textStroke);
+        }
+    `
+};
+
 const containerOffsets = {
-    'p5-man-container': -100,
-    'p5-tatran-container': -100
+    'p5-man-container': -200,
+    'p5-tatran-container': -200,
+    'p5-negative-container': -50,
+    'p5-omri-container': +100 
         // Add new containers here with their respective offsets
 };
 
@@ -224,6 +298,10 @@ function setupScrollEffect(containerId, textId) {
 const scrollEffects = [
     { containerId: 'p5-man-container', textId: 'following-text-man' },
     { containerId: 'p5-tatran-container', textId: 'following-text-tatran' },
+    { containerId: 'p5-negative-container', textId: 'following-text-negative' },
+    { containerId: 'p5-omri-container', textId: 'following-text-omri' }  // Add this line
+
+
     // Add new configurations here
 ];
 
@@ -231,6 +309,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize p5.js sketches
     new p5(createSketch(manConfig), document.getElementById('p5-man-container'));
     new p5(createSketch(tatranConfig), document.getElementById('p5-tatran-container'));
+    new p5(createSketch(negativeConfig), document.getElementById('p5-negative-container'));
+    new p5(createSketch(omriConfig), document.getElementById('p5-omri-container'));  // Add this line
+
+
 
     // Set up scroll effects
     scrollEffects.forEach(effect => {

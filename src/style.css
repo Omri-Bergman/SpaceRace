@@ -3,6 +3,8 @@
     --color-background: #000000;
     --color-text: #ffffff;
     --color-text-alt: #ffeded;
+    --color-background-dynamic: #000000;
+
 
     /* Font sizes */
     --font-size-base: 26px;
@@ -31,9 +33,13 @@
 
 html, body {
     overflow-x: hidden;
-    background-color: var(--color-background);
+    background-color: var(--color-background-dynamic);
     color: var(--color-text-alt);
     font-family: 'Arial', sans-serif;
+}
+
+body {
+    transition: background-color 0.5s ease;
 }
 
 /* Canvas styles */
@@ -91,7 +97,7 @@ section, .section, .section2, .section3, .section4, .section5 {
 
 .section2 { padding-left: 23%; }
 .section3 { padding-top: 30%; padding-right: 47%; }
-.section4 { padding-top: 20%; padding-left: 1%; }
+.section4 { padding-top: 20%; padding-left: 0%; padding-bottom: 30%; }
 .section5 { padding-right: 47%; }
 
 #section4 {
@@ -123,7 +129,7 @@ section:nth-child(odd) {
     z-index: 10;
 }
 
-#p5-man-container, #p5-tatran-container {
+#p5-man-container, #p5-tatran-container, #p5-negative-container, #p5-omri-container {
     position: absolute;
     z-index: 1000;
 }
@@ -137,23 +143,33 @@ section:nth-child(odd) {
 
 #p5-man-container { 
     top: var(--base-container-top); 
-    left: 60px; 
+    left: 20px; 
 }
 
 #p5-tatran-container { 
-    top: calc(var(--base-container-top) + var(--container-spacing)); 
+    top: calc(var(--base-container-top) + var(--container-spacing) + 100px); 
     left: 700px; 
 }
 
+#p5-negative-container { 
+    top: calc(var(--base-container-top) + (var(--container-spacing) * 2) + 200px); 
+    left: 20px; /* Adjust this value as needed */
+}
 
-#p5-man-container.fixed, #p5-tatran-container.fixed {
+#p5-omri-container {
+    top: calc(var(--base-container-top) + (var(--container-spacing) * 3) + 200px); 
+    left: 750px; /* Adjust this value as needed */
+}
+
+
+#p5-man-container.fixed, #p5-tatran-container.fixed, #p5-negative-container.fixed, #p5-omri-container.fixed {
     position: fixed;
     top: 0;
 }
 
 
 /* Following text styles */
-#following-text-man, #following-text-tatran {
+#following-text-man, #following-text-tatran, #following-text-negative, #following-text-omri{
     position: absolute;
     z-index: 1000;
     font-family: var(--font-NarkisRutti);
@@ -168,17 +184,30 @@ section:nth-child(odd) {
 }
 
 #following-text-man {
-    top: calc(var(--base-container-top) + var(--text-offset-top));
-    left: calc(60px + var(--text-offset-left));
+    top: calc(var(--base-container-top) + var(--text-offset-top) - 10px);
+    left: calc(70px + var(--text-offset-left));
     letter-spacing: 22px;
 }
 
 #following-text-tatran {
-    top: calc(var(--base-container-top) + var(--container-spacing) + var(--text-offset-top) + 80px);
+    top: calc(var(--base-container-top) + var(--container-spacing) + var(--text-offset-top) + 120px);
     left: calc(770px + var(--text-offset-left));
-    letter-spacing: 26px;
+    letter-spacing: 24px;
 }
-#following-text-man.fixed, #following-text-tatran.fixed {
+
+#following-text-negative {
+    top: calc(var(--base-container-top) + var(--container-spacing) * 2 + var(--text-offset-top) + 180px);
+    left: calc(65px + var(--text-offset-left)); /* Adjust this value as needed */
+    letter-spacing: 20px;
+}
+
+#following-text-omri {
+    top: calc(var(--base-container-top) + var(--container-spacing) * 3 + var(--text-offset-top) + 200px);
+    left: calc(800px + var(--text-offset-left)); /* Adjust this value as needed */
+    letter-spacing: 20px;
+}
+
+#following-text-man.fixed, #following-text-tatran.fixed, #following-text-negative.fixed, #following-text-omri.fixed {
     position: fixed;
     top: var(--text-offset-top);
 }
@@ -230,7 +259,7 @@ section:nth-child(odd) {
 }
 
 .content .blur-text--3 {
-    transform: translateX(-40%); /* Adjust this value to move left */
+    transform: translateX(-45%); /* Adjust this value to move left */
     max-width: 53%;
 }
 
@@ -240,7 +269,10 @@ section:nth-child(odd) {
 }
 
 .content .blur-text--5 { margin-right: -40%;}
-.content .blur-text--4 ,
+.content .blur-text--4  {
+      max-width: 45%;
+      margin-right: -47%;
+    }
 .section5  {
     max-width: 50%;
     margin-right: -40%;
@@ -283,6 +315,7 @@ section:nth-child(odd) {
     width: 40vw;
 }
 
+
 .omriFirst{
     margin-bottom: var(--spacing-medium);
 }
@@ -304,6 +337,11 @@ section:nth-child(odd) {
 
 .special-font-word {
     font-family: var(--font-Frankruel);
+}
+
+.content .blur-text--4 .wider-paragraph {
+    max-width: 70%; /* Adjust this value as needed */
+    margin-right: 0%; /* Adjust this value to align with other text if needed */
 }
 
 /* Dance section styles */
@@ -341,6 +379,15 @@ section:nth-child(odd) {
 
 .boldNarkis {
     font-weight: bold;
+}
+.omri-paragraph {
+    display: block;
+    margin-bottom: 0.10em; /* Adjust this value to increase/decrease space between paragraphs */
+}
+
+.blur-text--5 .omri-paragraph {
+    display: block !important;
+    margin-bottom: 0.10em !important;
 }
 
 /* Font face declarations */
