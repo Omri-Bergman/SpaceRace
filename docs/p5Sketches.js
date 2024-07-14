@@ -346,7 +346,7 @@ for (let shape of predefinedShapes) {
   
     // Display Hebrew text
     p.fill(255);
-    p.text(hebrewText, 255, 750);
+    p.text(hebrewText, 240, 780);
     // p.fill(255,0,0)
     // p.rect(0,0,p.width,p.height);
   };

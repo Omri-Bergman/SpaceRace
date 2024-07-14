@@ -8,6 +8,7 @@
 
 
     /* Font sizes */
+    --font-size-small: 22px;
     --font-size-base: 26px;
     --font-size-large: 40px;
     --font-size-xlarge: 50px;
@@ -396,10 +397,12 @@ section:nth-child(odd) {
 
 .danceLastP {
     text-align: center;
+    font-size: var(--font-size-small);
+
 }
 
 .danceLastPSpace {
-    padding-bottom: 0.5em;
+    padding-bottom: 0.5em;    
 }
 
 .boldNarkis {

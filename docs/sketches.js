@@ -253,7 +253,7 @@ const containerOffsets = {
     'p5-man-container': -300,
     'p5-tatran-container': -180,
     'p5-negative-container': -70,
-    'p5-omri-container': +200 
+    'p5-omri-container': +220 
         // Add new containers here with their respective offsets
 };
 
