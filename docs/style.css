@@ -396,6 +396,7 @@ section:nth-child(odd) {
 }
 
 .danceLastP {
+    padding-top: 35px;
     text-align: center;
     font-size: var(--font-size-small);
 
