@@ -416,6 +416,11 @@ for (let shape of predefinedShapes) {
 
 
 
+
+
+
+
+
 // ... (sketch2 remains the same)
 export const sketch2 = (p) => {
   let textX, textY, hebrewText;
@@ -428,53 +433,38 @@ export const sketch2 = (p) => {
   let animationProgress = 1; // 0 to 1
   let animationDuration = 30; // frames
 
-  const normalColor = p.color(250);
-  let currentShapeColor;
-  let currentTextColor;
-
   const createNewQuad = () => {
     let newQuad;
     let attempts = 0;
     const maxAttempts = 100; // Prevent infinite loop
   
     do {
-      // Calculate the minimum size needed to contain the text
-      let minSize = Math.max(textWidth, textHeight) * textScale * 1.4; // Add 40% padding
-      let maxSize = minSize * 1.5; // Allow some variability, but not too much
+      let minSize = Math.max(textWidth, textHeight) * textScale * 1.3;
+      let maxSize = minSize * 1.8;
   
-      // Generate the shape
       newQuad = new Quadrilateral(p, textX, p.height - textY, minSize, maxSize);
   
-      // Adjust the shape's position to keep it centered on the text
-      let shapeBounds = newQuad.getBounds();
-      let shapeWidth = shapeBounds.maxX - shapeBounds.minX;
-      let shapeHeight = shapeBounds.maxY - shapeBounds.minY;
-      let dx = textX - (shapeBounds.minX + shapeWidth / 2);
-      let dy = (p.height - textY) - (shapeBounds.minY + shapeHeight / 2);
-      newQuad.translate(dx, dy);
-  
-      // Recalculate bounds after translation
-      shapeBounds = newQuad.getBounds();
-  
-      // Calculate text bounds
       let textBounds = {
         minX: textX - (textWidth * textScale) / 2,
         maxX: textX + (textWidth * textScale) / 2,
-        minY: p.height - textY - (textHeight * textScale) / 2,
-        maxY: p.height - textY + (textHeight * textScale) / 2
+        minY: (p.height - textY) - (textHeight * textScale) / 2,
+        maxY: (p.height - textY) + (textHeight * textScale) / 2
       };
   
+      let shapeBounds = newQuad.getBounds();
+      let dx = textX - (shapeBounds.minX + shapeBounds.maxX) / 2;
+      let dy = (p.height - textY) - (shapeBounds.minY + shapeBounds.maxY) / 2;
+      newQuad.translate(dx, dy);
+  
+      shapeBounds = newQuad.getBounds();
       attempts++;
-      console.log("attampts: ",attempts)
-
-      // Check if the shape fully contains the text and break the loop if it does
+  
       if (shapeBounds.minX <= textBounds.minX &&
           shapeBounds.maxX >= textBounds.maxX &&
           shapeBounds.minY <= textBounds.minY &&
           shapeBounds.maxY >= textBounds.maxY) {
         break;
       }
-  
     } while (attempts < maxAttempts);
   
     if (attempts >= maxAttempts) {
@@ -491,53 +481,52 @@ export const sketch2 = (p) => {
   p.setup = () => {
     let canvas = p.createCanvas(p.windowWidth, 200);
     canvas.parent('p5-tickets');
-    p.textFont('narkisBlock');
+    p.textFont('Greta');
     p.textStyle(p.BOLD);
 
     hebrewText = "כרטיסים";
-    textX = 100;
+    textX = 80;
     textY = 100;
 
-    // Calculate text dimensions
-    p.textSize(32); // Set a base size for measurement
+    p.textSize(32);
     textWidth = p.textWidth(hebrewText);
     textHeight = p.textAscent() + p.textDescent();
 
     currentShape = createNewQuad();
     targetShape = currentShape;
+  };
 
-    currentShapeColor = normalColor;
-    currentTextColor = p.color(0,0,255);
+  p.mouseClicked = () => {
+    if (isMouseOver) {
+      startMorphAnimation();
+    }
   };
 
   p.draw = () => {
     p.clear();
   
     isMouseOver = currentShape.contains(p.mouseX, p.mouseY);
-
+  
     if (isMouseOver && !wasMouseOver) {
       startMorphAnimation();
     }
-
+  
     wasMouseOver = isMouseOver;
-
-    // Update animation
+  
     if (animationProgress < 1) {
       animationProgress += 1 / animationDuration;
       if (animationProgress > 1) animationProgress = 1;
     }
-
-    // Interpolate between current and target shape
+  
     let interpolatedShape = interpolateShapes(currentShape, targetShape, animationProgress);
-
+  
     p.push();
-    p.fill(currentShapeColor);
-    p.noStroke();
-    interpolatedShape.draw();
+    let fillColor = isMouseOver ? p.color(62, 38, 118, 170) : null;
+    interpolatedShape.draw(fillColor);
     p.pop();
-
+  
     p.push();
-    p.fill(currentTextColor);
+    p.fill(255);
     p.noStroke();
     p.translate(textX, p.height - textY);
     p.rotate(textRotation);
@@ -545,8 +534,7 @@ export const sketch2 = (p) => {
     p.textAlign(p.CENTER, p.CENTER);
     p.text(hebrewText, 0, 0);
     p.pop();
-
-    // If animation is complete, update current shape
+  
     if (animationProgress === 1) {
       currentShape = targetShape;
     }
@@ -575,10 +563,7 @@ class Quadrilateral {
     this.vertices = vertices || this.generateVertices(minSize, maxSize);
   }
 
-
-
   generateVertices(minSize, maxSize) {
-    // Generate four random points in clockwise order
     let angles = [
       this.p.random(0, this.p.PI/2),
       this.p.random(this.p.PI/2, this.p.PI),
@@ -594,7 +579,13 @@ class Quadrilateral {
     });
   }
 
-  draw() {
+  draw(fillColor = null) {
+    this.p.stroke(255);
+    if (fillColor) {
+      this.p.fill(fillColor);
+    } else {
+      this.p.noFill();
+    }
     this.p.beginShape();
     for (let v of this.vertices) {
       this.p.vertex(v.x, v.y);
@@ -603,7 +594,6 @@ class Quadrilateral {
   }
 
   contains(x, y) {
-    // Check if a point is inside the quadrilateral using ray-casting algorithm
     let inside = false;
     for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
       let xi = this.vertices[i].x, yi = this.vertices[i].y;
@@ -614,23 +604,6 @@ class Quadrilateral {
       if (intersect) inside = !inside;
     }
     return inside;
-  }
-  getLongestDiagonal() {
-    let diagonals = [
-      [this.vertices[0], this.vertices[2]],
-      [this.vertices[1], this.vertices[3]]
-    ];
-    
-    let longestDiagonal = diagonals.reduce((longest, current) => {
-      let currentLength = this.p.dist(current[0].x, current[0].y, current[1].x, current[1].y);
-      let longestLength = this.p.dist(longest[0].x, longest[0].y, longest[1].x, longest[1].y);
-      return currentLength > longestLength ? current : longest;
-    });
-
-    let angle = Math.atan2(longestDiagonal[1].y - longestDiagonal[0].y, 
-                           longestDiagonal[1].x - longestDiagonal[0].x);
-    
-    return [longestDiagonal, angle];
   }
 
   getBounds() {
@@ -647,5 +620,4 @@ class Quadrilateral {
       y: v.y + dy
     }));
   }
-
 }

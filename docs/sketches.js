@@ -96,8 +96,8 @@ function createSketch(config) {
 const manConfig = {
     imagePath: 'man.png',
     canvasSize: {
-        width: window.innerHeight * 0.9,
-        height: window.innerHeight * 0.9
+        width: window.innerHeight * 0.88,
+        height: window.innerHeight * 0.88
     },
     mainFunction: `
     // void main() {
@@ -144,8 +144,8 @@ const manConfig = {
 const tatranConfig = {
     imagePath: 'tatran.png',
     canvasSize: {
-        width: window.innerHeight,
-        height: window.innerHeight
+        width: window.innerHeight*0.93,
+        height: window.innerHeight*0.93
     },
     mainFunction: `
         void main() {
@@ -192,8 +192,8 @@ const tatranConfig = {
 const negativeConfig = {
     imagePath: 'negative.png',  // Replace with your actual image path
     canvasSize: {
-        width: window.innerHeight * 0.9,
-        height: window.innerHeight * 0.9
+        width: window.innerHeight * 0.88,
+        height: window.innerHeight * 0.88
     },
     mainFunction: `
         void main() {
@@ -210,8 +210,10 @@ const negativeConfig = {
                 circleSize,
                 circleEdge
             );
-            float textStroke = stroke(textMask, 0.6, 0.08, sdfCircle) * 6.0;
-            gl_FragColor = vec4(vec3(textStroke , textStroke* 0.9 , textStroke* 0.6), textStroke);
+            // float textStroke = stroke(textMask, 0.6, 0.08, sdfCircle) * 6.0;
+            // gl_FragColor = vec4(vec3(textStroke , textStroke* 0.9 , textStroke* 0.6), textStroke);
+        float textStroke = stroke(textMask,0.58, 0.05, sdfCircle) * 8.0;
+ gl_FragColor = vec4(vec3(textStroke , textStroke* 0.9 , textStroke* 0.6), textStroke);
         }
     `
 };
@@ -219,8 +221,8 @@ const negativeConfig = {
 const omriConfig = {
     imagePath: 'omri.png',  // Replace with your actual image path
     canvasSize: {
-        width: window.innerHeight * 0.9,
-        height: window.innerHeight * 0.9
+        width: window.innerHeight * 0.87,
+        height: window.innerHeight * 0.87
     },
     mainFunction: `
         void main() {
@@ -237,17 +239,21 @@ const omriConfig = {
                 circleSize,
                 circleEdge
             );
-            float textStroke = stroke(textMask, 0.55, 0.08, sdfCircle) * 10.0;
+            // float textStroke = stroke(textMask, 0.55, 0.08, sdfCircle) * 10.0;
+        float textStroke = stroke(textMask,0.58, 0.05, sdfCircle) * 8.0;
+
             gl_FragColor = vec4(vec3(textStroke*0.4 , textStroke*0.3 , textStroke* 0.9), textStroke);
+
+            
         }
     `
 };
 
 const containerOffsets = {
-    'p5-man-container': -200,
-    'p5-tatran-container': -200,
-    'p5-negative-container': -50,
-    'p5-omri-container': +100 
+    'p5-man-container': -300,
+    'p5-tatran-container': -180,
+    'p5-negative-container': -70,
+    'p5-omri-container': +200 
         // Add new containers here with their respective offsets
 };
 

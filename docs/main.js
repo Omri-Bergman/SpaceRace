@@ -367,50 +367,52 @@ document.addEventListener('DOMContentLoaded', () => {
   // Define an array of RGB colors for the gradient
   const colors = [
       { r: 0, g: 0, b: 0 },       // Black
-      { r: 15, g: 15, b: 55 },    // Dark Blue
-      { r: 45, g: 45, b: 150 },   // Dark Purple
-      { r: 30, g: 30, b: 110 },   // Deep Blue
-      { r:160, g:26, b:125 },   // Indigo
-      { r: 225, g: 180, b: 255 }, // Soft Pink
-      { r:242, g:130, b:102 }  // Orangish Sky
+      { r: 30, g: 30, b: 86 },    // Dark Blue
+      { r: 94, g: 45, b: 150 },   // Deep Blue
+      { r: 214, g: 79, b: 21 },   // Dark Purple
+      { r: 252, g: 192, b: 54 },  // Orangish Sky
   ];
 
+  // Function to interpolate between two colors
+  function interpolateColor(color1, color2, factor) {
+    return {
+      r: Math.round(color1.r + factor * (color2.r - color1.r)),
+      g: Math.round(color1.g + factor * (color2.g - color1.g)),
+      b: Math.round(color1.b + factor * (color2.b - color1.b))
+    };
+  }
+
   window.addEventListener('scroll', () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
-      const scrollPercentage = scrollTop / scrollHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
+    const scrollPercentage = scrollTop / scrollHeight;
 
-      let r, g, b;
-      let startColor, endColor, subPercentage;
+    let startColor, endColor;
 
-      if (scrollPercentage < 0.5) {
-          // Black to Dark Blue (50% of scroll)
-          subPercentage = scrollPercentage / 0.8;
-          startColor = colors[0];
-          endColor = colors[1];
-      } else if (scrollPercentage < 0.8) {
-          // Dark Blue to Deep Blue (30% of scroll)
-          subPercentage = (scrollPercentage - 0.5) / 0.3;
-          startColor = colors[1];
-          endColor = colors[2];
-      } else if (scrollPercentage < 0.92) {
-          // Deep Blue to Dark Purple (12% of scroll)
-          subPercentage = (scrollPercentage - 0.8) / 0.12;
-          startColor = colors[2];
-          endColor = colors[4];
+    if (scrollPercentage <= 0.2) {
+      // Solid black for the first 20% of scroll
+      startColor = endColor = colors[0];
+    } else {
+      // Adjust the scroll percentage to account for the initial 20%
+      const adjustedScrollPercentage = (scrollPercentage - 0.2) / 0.8;
+
+      if (adjustedScrollPercentage < 0.33) {
+        const factor = adjustedScrollPercentage / 0.33;
+        startColor = colors[0];
+        endColor = interpolateColor(colors[0], colors[1], factor);
+      } else if (adjustedScrollPercentage < 0.66) {
+        const factor = (adjustedScrollPercentage - 0.33) / 0.33;
+        startColor = interpolateColor(colors[0], colors[1], factor);
+        endColor = interpolateColor(colors[1], colors[2], factor);
       } else {
-          // Dark Purple to Orangish Sky (6% of scroll)
-          subPercentage = (scrollPercentage - 0.92) / 0.08;
-          startColor = colors[4];
-          endColor = colors[6];
+        const factor = (adjustedScrollPercentage - 0.66) / 0.34;
+        startColor = interpolateColor(colors[1], colors[2], factor);
+        endColor = interpolateColor(colors[2], colors[3], factor);
       }
+    }
 
-      // Interpolate between startColor and endColor
-      r = Math.round(startColor.r + subPercentage * (endColor.r - startColor.r));
-      g = Math.round(startColor.g + subPercentage * (endColor.g - startColor.g));
-      b = Math.round(startColor.b + subPercentage * (endColor.b - startColor.b));
-
-      // Set the background color
-      document.documentElement.style.setProperty('--color-background-dynamic', `rgb(${r}, ${g}, ${b})`);
+    // Set the gradient colors
+    document.documentElement.style.setProperty('--color-gradient-start', `rgb(${startColor.r}, ${startColor.g}, ${startColor.b})`);
+    document.documentElement.style.setProperty('--color-gradient-end', `rgb(${endColor.r}, ${endColor.g}, ${endColor.b})`);
   });
 });

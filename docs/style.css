@@ -3,13 +3,15 @@
     --color-background: #000000;
     --color-text: #ffffff;
     --color-text-alt: #ffeded;
-    --color-background-dynamic: #000000;
+    --color-gradient-start: #000000;
+    --color-gradient-end: #000000;
 
 
     /* Font sizes */
     --font-size-base: 26px;
     --font-size-large: 40px;
     --font-size-xlarge: 50px;
+    --font-size-xxlargeEnd: 9rem;
     --font-size-xxlarge: 13rem;
 
     /* Font families */
@@ -17,6 +19,7 @@
     --font-NarkisBlock: 'NarkisBlock', sans-serif;
     --font-NarkisRutti: 'NarkisRutti', sans-serif;
     --font-Frankruel: 'Frankruel', serif;
+    --font-Frankruel: 'Greta', serif;
 
     /* Spacing */
     --spacing-small: 0.1em;
@@ -33,13 +36,15 @@
 
 html, body {
     overflow-x: hidden;
-    background-color: var(--color-background-dynamic);
+    background: linear-gradient(to bottom, var(--color-gradient-start), var(--color-gradient-end));
+    background-attachment: fixed;
     color: var(--color-text-alt);
     font-family: 'Arial', sans-serif;
+    min-height: 100vh;
 }
 
 body {
-    transition: background-color 0.5s ease;
+    transition: background 0.5s ease;
 }
 
 /* Canvas styles */
@@ -95,10 +100,14 @@ section, .section, .section2, .section3, .section4, .section5 {
     min-height: 100vh;
 }
 
-.section2 { padding-left: 23%; }
+.end-section-extra-space {
+    min-height: 66vh;
+}
+
+.section2 { padding-left: 23%;}
 .section3 { padding-top: 30%; padding-right: 47%; }
 .section4 { padding-top: 20%; padding-left: 0%; padding-bottom: 30%; }
-.section5 { padding-right: 47%; margin-bottom: 0;}
+.section5 { padding-right: 47%; margin-bottom: 50vh;}
 
 #section4 {
     margin-top: 100vh; /* Adjust this value as needed */
@@ -127,6 +136,11 @@ section:nth-child(odd) {
 #p5-tickets {
     position: fixed;
     z-index: 10;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+
 }
 
 #p5-man-container, #p5-tatran-container, #p5-negative-container, #p5-omri-container {
@@ -135,8 +149,8 @@ section:nth-child(odd) {
 }
 
 :root {
-    --base-container-top: 3650px;
-    --container-spacing: 1600px;
+    --base-container-top: 3700px;
+    --container-spacing: 1900px;
     --text-offset-top: 440px;  /* Vertical distance from container to text */
     --text-offset-left: 0px;  /* Horizontal distance from container to text */
 }
@@ -157,8 +171,8 @@ section:nth-child(odd) {
 }
 
 #p5-omri-container {
-    top: calc(var(--base-container-top) + (var(--container-spacing) * 3) + 200px); 
-    left: 750px; /* Adjust this value as needed */
+    top: calc(var(--base-container-top) + (var(--container-spacing) * 3) + 100px); 
+    left: 720px; /* Adjust this value as needed */
 }
 
 
@@ -185,24 +199,24 @@ section:nth-child(odd) {
 
 #following-text-man {
     top: calc(var(--base-container-top) + var(--text-offset-top) - 10px);
-    left: calc(70px + var(--text-offset-left));
-    letter-spacing: 22px;
+    left: calc(85px + var(--text-offset-left));
+    letter-spacing: 20px;
 }
 
 #following-text-tatran {
     top: calc(var(--base-container-top) + var(--container-spacing) + var(--text-offset-top) + 120px);
-    left: calc(770px + var(--text-offset-left));
-    letter-spacing: 24px;
+    left: calc(790px + var(--text-offset-left));
+    letter-spacing: 20px;
 }
 
 #following-text-negative {
-    top: calc(var(--base-container-top) + var(--container-spacing) * 2 + var(--text-offset-top) + 180px);
-    left: calc(65px + var(--text-offset-left)); /* Adjust this value as needed */
+    top: calc(var(--base-container-top) + var(--container-spacing) * 2 + var(--text-offset-top) + 200px);
+    left: calc(85px + var(--text-offset-left)); /* Adjust this value as needed */
     letter-spacing: 20px;
 }
 
 #following-text-omri {
-    top: calc(var(--base-container-top) + var(--container-spacing) * 3 + var(--text-offset-top) + 200px);
+    top: calc(var(--base-container-top) + var(--container-spacing) * 3 + var(--text-offset-top) + 120px);
     left: calc(800px + var(--text-offset-left)); /* Adjust this value as needed */
     letter-spacing: 20px;
 }
@@ -251,7 +265,7 @@ section:nth-child(odd) {
 }
 
 .content .blur-text--2,
-.content .blur-text--3,
+.content .blur-text--3  { margin-bottom: 50vh; } 
 .content .blur-text--4,
 .content .blur-text--5,
 .section5 .content .blur-text--5 {
@@ -289,6 +303,17 @@ section:nth-child(odd) {
     text-transform: uppercase;
 }
 
+
+.end-section h2 {
+    font-size: var(--font-size-xxlargeEnd);
+    color: var(--color-text);
+    text-align: center;
+    margin-bottom: 0px;
+    font-family: var(--font-David);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 .paragraph-with-space {
     margin-bottom: var(--spacing-small);
 }
@@ -312,7 +337,7 @@ section:nth-child(odd) {
 .middlePMan, .middleP {
     margin-bottom: var(--spacing-medium);
     margin-right: 3em;
-    width: 40vw;
+    width: 39vw;
 }
 
 
@@ -390,6 +415,14 @@ section:nth-child(odd) {
     margin-bottom: 0.10em !important;
 }
 
+#section6 {
+    position: absolute;
+    right: 0;
+    top: 0; /* Adjust this value to control vertical positioning */
+    width: 50%; /* Adjust this value to control the width */
+    height: 100vh; /* This makes it full height */
+}
+
 .banner-text {
     font-family: var(--font-David);
     font-weight: 700;
@@ -432,6 +465,13 @@ section:nth-child(odd) {
 }
 
 @font-face {
+    font-family: 'VC David';
+    src: url('/fonts/VC_david-Cursive.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
     font-family: 'NarkisBlock';
     src: url('/fonts/NarkissBlock-Regular.otf') format('opentype');
     font-weight: normal;
@@ -470,6 +510,13 @@ section:nth-child(odd) {
     font-family: 'NarkisRutti';
     src: url('/fonts/NarkisRuttiBlack-Regular.otf') format('opentype');
     font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Greta';
+    src: url('/fonts/GretaTextH+L-BoldItalic.otf') format('opentype');
+    font-weight: bold;
     font-style: normal;
 }
 

@@ -1,4 +1,5 @@
-// Import the TextSplitter class for handling text splitting.
+
+// // Import the TextSplitter class for handling text splitting.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
